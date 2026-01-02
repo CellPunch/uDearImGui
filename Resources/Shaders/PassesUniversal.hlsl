@@ -10,6 +10,8 @@
 
 TEXTURE2D(_Texture);
 SAMPLER(sampler_Texture);
+float2 _ClipRectMin;
+float2 _ClipRectMax;
 
 half4 unpack_color(uint c)
 {
@@ -25,6 +27,13 @@ half4 unpack_color(uint c)
     return color;
 }
 
+float PointInRect01(float2 p, float2 rectMin, float2 rectMax)
+{
+    float2 insideMin = step(rectMin, p);
+    float2 insideMax = step(p, rectMax);
+    return insideMin.x * insideMin.y * insideMax.x * insideMax.y;
+}
+
 Varyings ImGuiPassVertex(ImVert input)
 {
     Varyings output  = (Varyings)0;
@@ -32,7 +41,8 @@ Varyings ImGuiPassVertex(ImVert input)
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_TRANSFER_INSTANCE_ID(input, output);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
-    
+
+    output.screenVertex = input.vertex;
     output.vertex    = TransformWorldToHClip(TransformObjectToWorld(float3(input.vertex, 0.0)));
     output.uv        = float2(input.uv.x, 1 - input.uv.y);
     output.color     = unpack_color(input.color);
@@ -44,7 +54,9 @@ half4 ImGuiPassFrag(Varyings input) : SV_Target
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
-    //TODO: Add rect clipping inside shader 
+    float inside = PointInRect01(input.screenVertex, _ClipRectMin, _ClipRectMax);
+    //clip(inside - 0.5);
+    
     return input.color * SAMPLE_TEXTURE2D(_Texture, sampler_Texture, input.uv);
 }
 

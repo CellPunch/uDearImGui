@@ -12,9 +12,10 @@ struct ImVert   // same layout as ImDrawVert
 
 struct Varyings
 {
-    float4 vertex   : SV_POSITION;
-    float2 uv       : TEXCOORD0;
-    half4  color    : COLOR;
+    float4 vertex       : SV_POSITION;
+    float2 uv           : TEXCOORD0;
+    half4  color        : COLOR;
+    float2 screenVertex : TEXCOORD1;
 
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO

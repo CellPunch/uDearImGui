@@ -189,6 +189,9 @@ namespace UImGui.Renderer
 
             int subOf = 0;
             
+            commandBuffer.ClearRenderTarget(true, false, Color.clear);
+            commandBuffer.DrawRenderer(UImGuiUtility.VRContext.VRManipulator.TintSphere, UImGuiUtility.VRContext.VRManipulator.TintSphere.sharedMaterial);
+            
             for (int n = 0, nMax = drawData.CmdListsCount; n < nMax; ++n)
             {
                 ImDrawListPtr drawList = drawData.CmdLists[n];
@@ -222,12 +225,26 @@ namespace UImGui.Renderer
                             _materialProperties.SetTexture(_textureID, texture);
                         }
 
-                        //commandBuffer.EnableScissorRect(new Rect(clip.x, fbSize.y - clip.w, clip.z - clip.x, clip.w - clip.y)); // Invert y.
+                        var rect = new Rect(clip.x, fbSize.y - clip.w, clip.z - clip.x, clip.w - clip.y);
+                        
+                        commandBuffer.SetGlobalVector("_ClipRectMin", rect.min);
+                        commandBuffer.SetGlobalVector("_ClipRectMax", rect.max);
+                        
                         commandBuffer.DrawMesh(_mesh, UImGuiUtility.VRContext.WorldSpaceTransformer.LocalToWorldMatrix, _material, subOf, -1, _materialProperties);
                     }
                 }
             }
 
+            var renderers = UImGuiUtility.VRContext.VRManipulator.Renderers;
+            foreach (var renderer in renderers)
+            {
+                for (var i = 0; i < renderer.sharedMaterials.Length; i++)
+                {
+                    var material = renderer.sharedMaterials[i];
+                    commandBuffer.DrawRenderer(renderer, material, i);
+                }
+            }
+            
             //commandBuffer.DisableScissorRect();
         }
     }

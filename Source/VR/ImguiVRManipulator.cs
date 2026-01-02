@@ -1,15 +1,34 @@
+using System;
 using UnityEngine;
 
 namespace UImGui.VR
 {
     public class ImguiVRManipulator : MonoBehaviour
     {
+        [SerializeField] private UImGui imGui;
+        [SerializeField] private UnityEngine.Renderer tintSphere;
         [SerializeField] private Transform leftManipulatorTransform, rightManipulatorTransform;
         [SerializeField] private Transform cursor;
+        [SerializeField] private float cursorScaleDownOnPress = 0.8f;
         [SerializeField] private LineRenderer cursorLineRenderer;
+        [SerializeField] private UnityEngine.Renderer[] manipulatorRenderers;
+        
+
+        public UnityEngine.Renderer TintSphere => tintSphere;
+        public UnityEngine.Renderer[] Renderers => manipulatorRenderers;
+
+        private void Awake()
+        {
+            foreach (var renderer in Renderers)
+            {
+                renderer.enabled = false;
+            }
+        }
 
         private void LateUpdate()
         {
+            if (!imGui.enabled) return;
+            
             var virtualXRInput = UImGuiUtility.VRContext.VirtualXRInput;
             var worldSpaceTransformer = UImGuiUtility.VRContext.WorldSpaceTransformer;
 
@@ -27,7 +46,8 @@ namespace UImGui.VR
                 out var rightRotationWS);
             rightManipulatorTransform.SetPositionAndRotation(rightPositionWS, rightRotationWS);
 
-            cursor.position = worldSpaceTransformer.WorldSpaceCursorPosition;
+            cursor.SetPositionAndRotation(worldSpaceTransformer.WorldSpaceCursorPosition, Quaternion.LookRotation(worldSpaceTransformer.SurfaceNormal));
+            cursor.localScale = Vector3.Lerp(Vector3.one, Vector3.one * cursorScaleDownOnPress, virtualXRInput.PressButton.ReadValue<float>());
 
             cursorLineRenderer.SetPosition(0,
                 virtualXRInput.HandCursorMode == HandCursorMode.Left ? leftPositionWS : rightPositionWS);

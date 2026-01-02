@@ -44,7 +44,8 @@ namespace UImGui
 			return new VRContext
 			{
 				VirtualXRInput = new VirtualXRInput(configuration.vrInputAsset, configuration.handCursorMode),
-				WorldSpaceTransformer = new WorldSpaceTransformer(configuration.worldSpaceConfig)
+				WorldSpaceTransformer = new WorldSpaceTransformer(configuration.worldSpaceConfig),
+				VRManipulator = configuration.vrManipulator,
 			};
 		}
 

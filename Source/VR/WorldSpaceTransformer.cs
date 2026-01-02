@@ -28,6 +28,7 @@ namespace UImGui.VR
         public Matrix4x4 LocalToWorldMatrix { get; private set; }
         public Matrix4x4 WorldToLocalMatrix { get; private set; }
         public Vector3 WorldSpaceCursorPosition => _lastWorldSpacePointPosition;
+        public Vector3 SurfaceNormal => -_virtualCameraDirection;
 
 
         public WorldSpaceTransformer(WorldSpaceTransformerConfig config)

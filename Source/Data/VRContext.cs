@@ -5,5 +5,6 @@ namespace UImGui.VR
     {
         public VirtualXRInput VirtualXRInput;
         public WorldSpaceTransformer WorldSpaceTransformer;
+        public ImguiVRManipulator VRManipulator;
     }
 }
