@@ -20,7 +20,8 @@ namespace UImGui.Renderer
         DrawMesh,
         DrawRenderer,
         DrawProcedural,
-        ClearDepth
+        ClearDepth,
+        EnableKeyword
     }
 
     public struct DrawCommand
@@ -39,6 +40,7 @@ namespace UImGui.Renderer
         public ComputeBuffer argumentsBuffer;
         public UnityEngine.Renderer renderer;
         public TextureHandle renderGraphTextureHandle;
+        public LocalKeyword keyword;
     }
 
     public static class DrawCommandUtils
@@ -92,6 +94,9 @@ namespace UImGui.Renderer
                         break;
                     case DrawCommandType.ClearDepth:
                         commandBuffer.ClearRenderTarget(true, false, Color.clear);
+                        break;
+                    case DrawCommandType.EnableKeyword:
+                        commandBuffer.EnableKeyword(command.materialData, command.keyword);
                         break;
                 }
             }

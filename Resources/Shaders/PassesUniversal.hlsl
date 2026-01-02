@@ -10,8 +10,8 @@
 
 TEXTURE2D(_Texture);
 SAMPLER(sampler_Texture);
-float2 _ClipRectMin;
-float2 _ClipRectMax;
+float2 _DisplaySize;
+float4 _ClipRect;
 
 half4 unpack_color(uint c)
 {
@@ -27,11 +27,10 @@ half4 unpack_color(uint c)
     return color;
 }
 
-float PointInRect01(float2 p, float2 rectMin, float2 rectMax)
+void clipRect(float2 screenPosition)
 {
-    float2 insideMin = step(rectMin, p);
-    float2 insideMax = step(p, rectMax);
-    return insideMin.x * insideMin.y * insideMax.x * insideMax.y;
+    float2 clipTest = min(screenPosition.xy - _ClipRect.xy, _ClipRect.zw - screenPosition.xy);
+    clip(clipTest);
 }
 
 Varyings ImGuiPassVertex(ImVert input)
@@ -42,7 +41,10 @@ Varyings ImGuiPassVertex(ImVert input)
     UNITY_TRANSFER_INSTANCE_ID(input, output);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
-    output.screenVertex = input.vertex;
+#ifdef CLIP_RECT
+    output.screenVertex = float2(input.vertex.x, _DisplaySize.y - input.vertex.y);
+#endif
+    
     output.vertex    = TransformWorldToHClip(TransformObjectToWorld(float3(input.vertex, 0.0)));
     output.uv        = float2(input.uv.x, 1 - input.uv.y);
     output.color     = unpack_color(input.color);
@@ -54,8 +56,9 @@ half4 ImGuiPassFrag(Varyings input) : SV_Target
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
-    float inside = PointInRect01(input.screenVertex, _ClipRectMin, _ClipRectMax);
-    //clip(inside - 0.5);
+#ifdef CLIP_RECT
+    clipRect(input.screenVertex);
+#endif
     
     return input.color * SAMPLE_TEXTURE2D(_Texture, sampler_Texture, input.uv);
 }

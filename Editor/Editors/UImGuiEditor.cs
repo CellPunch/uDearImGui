@@ -28,7 +28,7 @@ namespace UImGui.Editor
         private bool usingImPlot = true;
 
         public override void OnInspectorGUI()
-        {
+        {  
             serializedObject.Update();
 
             CheckRequirements();
@@ -83,7 +83,7 @@ namespace UImGui.Editor
 
         private void DrawDebug()
         {
-            if (Application.isPlaying)
+            if (Application.isPlaying && ((MonoBehaviour)serializedObject.targetObject).enabled)
             {
                 EditorGUILayout.Space();
                 EditorGUILayout.LabelField("Debug");

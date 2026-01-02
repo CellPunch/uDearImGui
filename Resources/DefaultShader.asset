@@ -19,3 +19,6 @@ MonoBehaviour:
     Texture: _Texture
     Vertices: _Vertices
     BaseVertex: _BaseVertex
+    ScreenSize: _DisplaySize
+    ClipRect: _ClipRect
+    ClipRectKeyword: CLIP_RECT

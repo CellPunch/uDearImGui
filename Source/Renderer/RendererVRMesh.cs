@@ -40,13 +40,21 @@ namespace UImGui.Renderer
         private readonly TextureManager _textureManager;
         
         private int _prevSubMeshCount = 1; // number of sub meshes used previously
+        private readonly int _clipRectID;
+        private readonly int _screenSizeID;
+        private readonly LocalKeyword _clipRectKeyword;
 
 
         public RendererVRMesh(ShaderResourcesAsset resources, TextureManager texManager)
         {
             _shader = resources.Shader.Mesh;
             _textureManager = texManager;
+            
             _textureID = Shader.PropertyToID(resources.PropertyNames.Texture);
+            
+            _clipRectID = Shader.PropertyToID(resources.PropertyNames.ClipRect);
+            _screenSizeID = Shader.PropertyToID(resources.PropertyNames.ScreenSize);
+            _clipRectKeyword = new LocalKeyword(resources.Shader.Mesh, resources.PropertyNames.ClipRectKeyword);
         }
 
         public void Initialize(ImGuiIOPtr io)
@@ -248,20 +256,25 @@ namespace UImGui.Renderer
                             });
                             //_materialProperties.SetTexture(_textureID, texture);
                         }
-
+                        
                         var rect = new Rect(clip.x, fbSize.y - clip.w, clip.z - clip.x, clip.w - clip.y);
-
                         commands.Add(new DrawCommand()
                         {
                             type = DrawCommandType.SetGlobalVector,
-                            propertyId = Shader.PropertyToID("_ClipRectMin"),
-                            vectorData = rect.min
+                            propertyId = _clipRectID,
+                            vectorData = new Vector4(rect.min.x, rect.min.y, rect.max.x, rect.max.y)
                         });
                         commands.Add(new DrawCommand()
                         {
                             type = DrawCommandType.SetGlobalVector,
-                            propertyId = Shader.PropertyToID("_ClipRectMax"),
-                            vectorData = rect.max
+                            propertyId = _screenSizeID,
+                            vectorData = new Vector4(drawData.DisplaySize.x, drawData.DisplaySize.y, 0, 0)
+                        });
+                        commands.Add(new DrawCommand()
+                        {
+                            type = DrawCommandType.EnableKeyword,
+                            materialData = _material,
+                            keyword = _clipRectKeyword
                         });
                         //commandBuffer.SetGlobalVector("_ClipRectMin", rect.min);
                         //commandBuffer.SetGlobalVector("_ClipRectMax", rect.max);

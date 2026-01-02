@@ -8,6 +8,9 @@ namespace UImGui
 		public string Texture;
 		public string Vertices;
 		public string BaseVertex;
+		public string ScreenSize;
+		public string ClipRect;
+		public string ClipRectKeyword;
 
 		public ShaderProperties Clone()
 		{

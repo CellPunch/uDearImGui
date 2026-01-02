@@ -15,7 +15,9 @@ struct Varyings
     float4 vertex       : SV_POSITION;
     float2 uv           : TEXCOORD0;
     half4  color        : COLOR;
+#ifdef CLIP_RECT
     float2 screenVertex : TEXCOORD1;
+#endif
 
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
