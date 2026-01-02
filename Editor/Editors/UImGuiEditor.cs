@@ -10,10 +10,7 @@ namespace UImGui.Editor
     [CustomEditor(typeof(UImGui))]
     internal class UImGuiEditor : UnityEditor.Editor
     {
-        private SerializedProperty _urpRenderGraphBypass;
         private SerializedProperty _doGlobalEvents;
-        private SerializedProperty _camera;
-        private SerializedProperty _renderFeature;
         private SerializedProperty _renderer;
         private SerializedProperty _platform;
         private SerializedProperty _initialConfiguration;
@@ -38,14 +35,9 @@ namespace UImGui.Editor
 
             EditorGUI.BeginChangeCheck();
 
-            EditorGUILayout.PropertyField(_urpRenderGraphBypass);
+            
             EditorGUILayout.PropertyField(_doGlobalEvents);
-            if (RenderUtility.IsUsingURP())
-            {
-                EditorGUILayout.PropertyField(_renderFeature);
-            }
-
-            EditorGUILayout.PropertyField(_camera);
+            
             EditorGUILayout.PropertyField(_renderer);
             EditorGUILayout.PropertyField(_platform);
             DrawVRRelatedThings();
@@ -105,10 +97,7 @@ namespace UImGui.Editor
 
         private void OnEnable()
         {
-            _urpRenderGraphBypass = serializedObject.FindProperty("_urpRenderGraphBypass");
             _doGlobalEvents = serializedObject.FindProperty("_doGlobalEvents");
-            _camera = serializedObject.FindProperty("_camera");
-            _renderFeature = serializedObject.FindProperty("_renderFeature");
             _renderer = serializedObject.FindProperty("_rendererType");
             _platform = serializedObject.FindProperty("_platformType");
             _initialConfiguration = serializedObject.FindProperty("_initialConfiguration");
@@ -145,16 +134,6 @@ namespace UImGui.Editor
             EditorGUILayout.Space();
 
             _messages.Clear();
-            if (_camera.objectReferenceValue == null)
-            {
-                _messages.AppendLine("Must assign a Camera.");
-            }
-
-            if (RenderUtility.IsUsingURP() && !_urpRenderGraphBypass.boolValue &&
-                _renderFeature.objectReferenceValue == null)
-            {
-                _messages.AppendLine("Must assign a RenderFeature when using the URP.");
-            }
 
 #if !UNITY_2020_1_OR_NEWER
 			if ((RenderType)_renderer.enumValueIndex == RenderType.Mesh)
