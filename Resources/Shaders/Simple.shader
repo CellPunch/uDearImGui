@@ -20,6 +20,7 @@
             Tags { "LightMode"="UniversalForward" }
 
             ZWrite On
+            ZTest Always
             Cull Front
 
             HLSLPROGRAM

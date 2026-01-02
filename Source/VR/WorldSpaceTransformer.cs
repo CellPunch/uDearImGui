@@ -145,8 +145,8 @@ namespace UImGui.VR
                 if (_lastWorldSpacePointPosition.magnitude == 0)
                     _lastWorldSpacePointPosition = pointWorldSpace;
                 
-                _lastWorldSpacePointPosition = Vector3.MoveTowards(_lastWorldSpacePointPosition, pointWorldSpace,
-                    _config.pixelsPerUnit * 0.05f * Time.deltaTime); // Attempt to filter noise
+                float smoothFactor = Mathf.Exp(-Time.deltaTime / _config.cursorSmoothTime);
+                _lastWorldSpacePointPosition = Vector3.Lerp(pointWorldSpace, _lastWorldSpacePointPosition, smoothFactor);
                 
                 var pointScreenSpace = WorldToLocalMatrix.MultiplyPoint3x4(_lastWorldSpacePointPosition);
                 _lastCursorPosition = pointScreenSpace;

@@ -10,7 +10,7 @@ namespace UImGui.VR
         [SerializeField] private Transform leftManipulatorTransform, rightManipulatorTransform;
         [SerializeField] private Transform cursor;
         [SerializeField] private float cursorScaleDownOnPress = 0.8f;
-        [SerializeField] private LineRenderer cursorLineRenderer;
+        [SerializeField] private VRRayVisualizer rayVisualizer;
         [SerializeField] private UnityEngine.Renderer[] manipulatorRenderers;
         
 
@@ -49,9 +49,9 @@ namespace UImGui.VR
             cursor.SetPositionAndRotation(worldSpaceTransformer.WorldSpaceCursorPosition, Quaternion.LookRotation(worldSpaceTransformer.SurfaceNormal));
             cursor.localScale = Vector3.Lerp(Vector3.one, Vector3.one * cursorScaleDownOnPress, virtualXRInput.PressButton.ReadValue<float>());
 
-            cursorLineRenderer.SetPosition(0,
-                virtualXRInput.HandCursorMode == HandCursorMode.Left ? leftPositionWS : rightPositionWS);
-            cursorLineRenderer.SetPosition(1, worldSpaceTransformer.WorldSpaceCursorPosition);
+            var cursorPositionWS = virtualXRInput.HandCursorMode == HandCursorMode.Left ? leftPositionWS : rightPositionWS; 
+            var cursorRotationWS = virtualXRInput.HandCursorMode == HandCursorMode.Left ? leftRotationWS : rightRotationWS; 
+            rayVisualizer.UpdateRay(cursorPositionWS, cursorRotationWS, worldSpaceTransformer.WorldSpaceCursorPosition);
         }
     }
 }

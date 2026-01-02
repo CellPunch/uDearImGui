@@ -65,7 +65,7 @@ MonoBehaviour:
         m_Flags: 0
       m_Flags: 0
     m_Reference: {fileID: 0}
-  holdDuration: 3
+  holdDuration: 2
 --- !u!1 &3932112592358774854
 GameObject:
   m_ObjectHideFlags: 0
@@ -76,6 +76,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8496489980872241451}
   - component: {fileID: 3528815397811830809}
+  - component: {fileID: 5722203563531493585}
   m_Layer: 0
   m_Name: VRInput
   m_TagString: Untagged
@@ -121,12 +122,28 @@ MonoBehaviour:
   rightManipulatorTransform: {fileID: 6241369849218398299}
   cursor: {fileID: 2460380477215090649}
   cursorScaleDownOnPress: 0.8
-  cursorLineRenderer: {fileID: 5050882122646116118}
+  rayVisualizer: {fileID: 5722203563531493585}
   manipulatorRenderers:
   - {fileID: 4938270253390194125}
   - {fileID: 5104513603812262708}
   - {fileID: 5050882122646116118}
   - {fileID: 3633890184110136502}
+--- !u!114 &5722203563531493585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3932112592358774854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db4b4eee487585d438c540e80c918019, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lineRenderer: {fileID: 5050882122646116118}
+  curveResolution: 15
+  curvature: 0.3
+  curveHeight: 0.01
 --- !u!1 &4192238346202526871
 GameObject:
   m_ObjectHideFlags: 0
@@ -490,6 +507,10 @@ PrefabInstance:
     - target: {fileID: 5187045405267620860, guid: 672fdba9d96ef094e9d1deff4fbef58f, type: 3}
       propertyPath: _vrConfiguration.worldSpaceConfig.followingSpeed
       value: 1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5187045405267620860, guid: 672fdba9d96ef094e9d1deff4fbef58f, type: 3}
+      propertyPath: _vrConfiguration.worldSpaceConfig.cursorSmoothTime
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 5187045405267620860, guid: 672fdba9d96ef094e9d1deff4fbef58f, type: 3}
       propertyPath: _fontCustomInitializer.m_PersistentCalls.m_Calls.Array.size

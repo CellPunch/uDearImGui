@@ -20,7 +20,7 @@ namespace UImGui
         {
             if (button.action.IsPressed())
             {
-                if (_time - Time.time < 0)
+                if (_time - Time.timeSinceLevelLoad < 0)
                 {
                     uImGui.enabled = !uImGui.enabled;
                     _time = Time.time + holdDuration + 1f;
@@ -28,7 +28,7 @@ namespace UImGui
             }
             else
             {
-                _time = Time.time + holdDuration;
+                _time = Time.timeSinceLevelLoad + holdDuration;
             }
         }
     }
