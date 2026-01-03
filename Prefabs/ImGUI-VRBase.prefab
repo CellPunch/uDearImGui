@@ -144,9 +144,9 @@ MonoBehaviour:
   cursorScaleDownOnPress: 0.8
   rayVisualizer: {fileID: 5722203563531493585}
   manipulatorRenderers:
+  - {fileID: 5050882122646116118}
   - {fileID: 4938270253390194125}
   - {fileID: 5104513603812262708}
-  - {fileID: 5050882122646116118}
   - {fileID: 3633890184110136502}
 --- !u!114 &5722203563531493585
 MonoBehaviour:
