@@ -54,7 +54,7 @@ This project is based on the [RG.ImGui](https://github.com/realgamessoftware/dea
 - **For URP**: See [Using URP](#using-urp) section
 - **For HDRP**: See [Using HDRP](#using-hdrp) section
 - **For Built-in RP**: See [Using Built-in](#using-built-in) section
-- **For VR Mode**: Add the `ImGUI-VRBase` prefab from the `Prefabs` folder to your scene and assign your Tracking Origin object to the `Tracking Space` field (typically the object containing the camera, e.g., `Camera Offset` or `XR Origin Hands (XR Rig)`)
+- **For VR Mode**: Add the `ImGUI-VRBase` prefab from the `Prefabs` folder to your scene. For more info see `VR Mode Input Bindings` below 
 - You're ready! Check the [Samples section](#samples) for usage examples
 
 ## VR Mode Input Bindings
