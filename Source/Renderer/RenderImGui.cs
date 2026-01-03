@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
+#if UNITY_6000_0_OR_NEWER
 using UnityEngine.Rendering.RenderGraphModule;
+#endif
 #if HAS_URP
 using UnityEngine.Rendering.Universal;
 using UnityEngine;
@@ -42,6 +44,7 @@ namespace UImGui.Renderer
                 CommandBufferPool.Release(commandBuffer);
             }
 
+#if UNITY_6000_0_OR_NEWER
             public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
             {
                 var resourceData = frameData.Get<UniversalResourceData>();
@@ -73,6 +76,7 @@ namespace UImGui.Renderer
                 
                 DrawCommandUtils.BuildCommandBuffer(ref cmd, data.Commands);
             }
+#endif
         }
 
         [Serializable]

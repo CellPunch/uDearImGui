@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+#if UNITY_6000_0_OR_NEWER
 using UnityEngine.Rendering.RenderGraphModule;
+#endif
 
 namespace UImGui.Renderer
 {
@@ -39,12 +41,15 @@ namespace UImGui.Renderer
         public GraphicsBuffer indexBuffer;
         public ComputeBuffer argumentsBuffer;
         public UnityEngine.Renderer renderer;
+#if UNITY_6000_0_OR_NEWER
         public TextureHandle renderGraphTextureHandle;
+#endif
         public LocalKeyword keyword;
     }
 
     public static class DrawCommandUtils
     {
+#if UNITY_6000_0_OR_NEWER
         public static void BuildCommandBuffer(ref RasterCommandBuffer commandBuffer, List<DrawCommand> drawCommands)
         {
             for (int i = 0; i < drawCommands.Count; i++)
@@ -101,6 +106,7 @@ namespace UImGui.Renderer
                 }
             }
         }
+#endif
 
         public static void BuildCommandBuffer(ref CommandBuffer commandBuffer, List<DrawCommand> drawCommands)
         {
@@ -156,6 +162,7 @@ namespace UImGui.Renderer
             }
         }
 
+#if UNITY_6000_0_OR_NEWER
         public static void PrepareForRenderGraph(IRasterRenderGraphBuilder builder, RenderGraph renderGraph,
             List<DrawCommand> commands)
         {
@@ -172,5 +179,6 @@ namespace UImGui.Renderer
                 commands[i] = command;
             }
         }
+#endif
     }
 }
