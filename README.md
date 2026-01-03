@@ -400,6 +400,9 @@ No special configuration required.
 
 **Issue**: Font atlas crash. There's no fix. Use the callback method for custom fonts instead, or use `CustomFontBootstrap`.
 
+**Android**: If you get an error in an Android build indicating that the cimgui library could not be loaded, make sure to verify the import settings of the libraries located at uimgui-extended\Plugins\imgui\android.
+Each folder corresponding to an ABI must be marked for Android and configured for the correct target architecture.
+
 ## Credits
 
 - [Psydack](https://github.com/psydack/) and the [original UImGui repo](https://github.com/psydack/uimgui)
