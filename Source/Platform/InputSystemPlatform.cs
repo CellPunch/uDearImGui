@@ -154,14 +154,9 @@ namespace UImGui.Platform
                 if (TryMapKeys(key, out ImGuiKey imguikey))
                 {
                     KeyControl keyControl = keyboard[key];
-                    io.AddKeyEvent(imguikey, keyControl.IsPressed());
+                    io.AddKeyEvent(imguikey, keyControl.isPressed);
                 }
             }
-
-            io.KeyShift = keyboard[Key.LeftShift].isPressed || keyboard[Key.RightShift].isPressed;
-            io.KeyCtrl = keyboard[Key.LeftCtrl].isPressed || keyboard[Key.RightCtrl].isPressed;
-            io.KeyAlt = keyboard[Key.LeftAlt].isPressed || keyboard[Key.RightAlt].isPressed;
-            io.KeySuper = keyboard[Key.LeftMeta].isPressed || keyboard[Key.RightMeta].isPressed;
 
             // Text input.
             for (int i = 0, iMax = _textInput.Count; i < iMax; ++i)
@@ -188,9 +183,9 @@ namespace UImGui.Platform
                 >= Key.Digit1 and <= Key.Digit9 => KeyToImGuiKeyShortcut(key, Key.Digit1, ImGuiKey._1),
                 Key.Digit0 => ImGuiKey._0,
                 // BUG: mod keys make everything slow. 
-                // Key.LeftShift or Key.RightShift => ImGuiKey.ModShift,
-                // Key.LeftCtrl or Key.RightCtrl => ImGuiKey.ModCtrl,
-                // Key.LeftAlt or Key.RightAlt => ImGuiKey.ModAlt,
+                Key.LeftShift or Key.RightShift => ImGuiKey.ModShift,
+                Key.LeftCtrl or Key.RightCtrl => ImGuiKey.ModCtrl,
+                Key.LeftAlt /*or Key.RightAlt*/ => ImGuiKey.ModAlt,
                 Key.LeftWindows or Key.RightWindows => ImGuiKey.ModSuper,
                 Key.ContextMenu => ImGuiKey.Menu,
                 Key.UpArrow => ImGuiKey.UpArrow,
