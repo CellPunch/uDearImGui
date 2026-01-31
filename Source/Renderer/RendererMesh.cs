@@ -134,7 +134,7 @@ namespace UImGui.Renderer
 			//  Upload data into mesh.
 			int vtxOf = 0;
 			int idxOf = 0;
-			List<SubMeshDescriptor> descriptors = new List<SubMeshDescriptor>();
+			using var _ = ListPool<SubMeshDescriptor>.Get(out var descriptors);
 
 			for (int n = 0, nMax = drawData.CmdListsCount; n < nMax; ++n)
 			{

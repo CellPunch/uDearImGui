@@ -134,6 +134,7 @@ namespace UImGui.Renderer
 			}
 		}
 
+		private readonly int[] _drawArgs = new int[5];
 		private unsafe void UpdateBuffers(ImDrawDataPtr drawData)
 		{
 			int drawArgCount = 0; // nr of drawArgs is the same as the nr of ImDrawCmd
@@ -182,15 +183,14 @@ namespace UImGui.Renderer
 				for (int meshIndex = 0, iMax = drawList.CmdBuffer.Size; meshIndex < iMax; ++meshIndex)
 				{
 					ImDrawCmdPtr cmd = drawList.CmdBuffer[meshIndex];
-					var drawArgs = new int[]
-					{
-						(int)cmd.ElemCount,
-						1,
-						idxOf + (int)cmd.IdxOffset,
-						vtxOf,
-						0
-					};
-					_argumentsBuffer.SetData(drawArgs, 0, argOf, 5);
+
+					_drawArgs[0] = (int)cmd.ElemCount;
+					_drawArgs[1] = 1;
+					_drawArgs[2] = idxOf + (int)cmd.IdxOffset;
+					_drawArgs[3] = vtxOf;
+					_drawArgs[4] = 0;
+
+					_argumentsBuffer.SetData(_drawArgs, 0, argOf, 5);
 					argOf += 5; // 5 int for each command.
 				}
 				vtxOf += vtxArray.Length;
