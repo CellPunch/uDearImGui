@@ -63,7 +63,7 @@ namespace UImGui.Platform
 
 			io.DisplaySize = displayRect.size; // TODO: dpi aware, scale, etc.
 
-			io.DeltaTime = Time.unscaledDeltaTime;
+			io.DeltaTime = Mathf.Max(Time.unscaledDeltaTime, 0.001f);
 
 			if (_iniSettings != null && io.WantSaveIniSettings)
 			{
