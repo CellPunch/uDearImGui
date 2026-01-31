@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
-#if UNITY_6000_0_OR_NEWER
 using UnityEngine.Rendering.RenderGraphModule;
-#endif
 #if HAS_URP
 using UnityEngine.Rendering.Universal;
 using UnityEngine;
@@ -17,8 +15,6 @@ namespace UImGui.Renderer
         
         private class CommandBufferPass : ScriptableRenderPass
         {
-            private readonly PassData _passData;
-
             private class PassData
             {
                 public List<DrawCommand> Commands;
@@ -29,44 +25,34 @@ namespace UImGui.Renderer
                 }
             }
 
-            public CommandBufferPass()
-            {
-                _passData = new PassData();
-            }
-
-#if UNITY_6000_0_OR_NEWER
             public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
             {
                 var resourceData = frameData.Get<UniversalResourceData>();
                 var commands = UImGuiUtility.Context.DrawCommands;
-                
-                using (var builder =
-                       renderGraph.AddRasterRenderPass<PassData>("ImGui Render Pass", out var passData))
+
+                using var builder = renderGraph.AddRasterRenderPass<PassData>("ImGui Render Pass", out var passData);
+                DrawCommandUtils.PrepareForRenderGraph(builder, renderGraph, commands);
+                    
+                passData.Setup(commands);
+                    
+                builder.AllowGlobalStateModification(true);
+                builder.SetRenderAttachment(resourceData.activeColorTexture, 0);
+                builder.SetRenderAttachmentDepth(resourceData.activeDepthTexture);
+                    
+                builder.AllowPassCulling(commands.Count == 0);
+                    
+                builder.SetRenderFunc((PassData data, RasterGraphContext context) =>
                 {
-                    DrawCommandUtils.PrepareForRenderGraph(builder, renderGraph, commands);
-                    
-                    passData.Setup(commands);
-                    
-                    builder.AllowGlobalStateModification(true);
-                    builder.SetRenderAttachment(resourceData.activeColorTexture, 0);
-                    builder.SetRenderAttachmentDepth(resourceData.activeDepthTexture);
-                    
-                    builder.AllowPassCulling(commands.Count == 0);
-                    
-                    builder.SetRenderFunc((PassData data, RasterGraphContext context) =>
-                    {
-                        ExecuteImGuiPass(data, context);
-                    });
-                }
+                    ExecuteImGuiPass(data, context);
+                });
             }
 
-            private void ExecuteImGuiPass(PassData data, RasterGraphContext context)
+            private static void ExecuteImGuiPass(PassData data, RasterGraphContext context)
             {
                 var cmd = context.cmd;
                 
                 DrawCommandUtils.BuildCommandBuffer(ref cmd, data.Commands);
             }
-#endif
         }
 
         [Serializable]
@@ -76,7 +62,7 @@ namespace UImGui.Renderer
         }
 
         public Settings settings;
-        public RenderPassEvent RenderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
+        public RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
 
         private CommandBufferPass _commandBufferPass;
 
@@ -84,7 +70,7 @@ namespace UImGui.Renderer
         {
             _commandBufferPass = new CommandBufferPass()
             {
-                renderPassEvent = RenderPassEvent,
+                renderPassEvent = renderPassEvent,
             };
         }
 
@@ -95,7 +81,7 @@ namespace UImGui.Renderer
             if (renderingData.cameraData.cameraType != CameraType.Game && (!settings.drawInSceneView ||
                                                                            renderingData.cameraData.cameraType !=
                                                                            CameraType.SceneView)) return;
-            _commandBufferPass.renderPassEvent = RenderPassEvent;
+            _commandBufferPass.renderPassEvent = renderPassEvent;
 
             renderer.EnqueuePass(_commandBufferPass);
         }
