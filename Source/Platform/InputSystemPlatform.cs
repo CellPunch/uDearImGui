@@ -1,7 +1,7 @@
 #if HAS_INPUTSYSTEM
-using ImGuiNET;
 using System;
 using System.Collections.Generic;
+using Hexa.NET.ImGui;
 using UImGui.Assets;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -43,10 +43,10 @@ namespace UImGui.Platform
             // Set Unity mouse position if requested.
             if (io.WantSetMousePos)
             {
-                mouse.WarpCursorPosition(Utils.ImGuiToScreen(io.MousePos));
+                mouse.WarpCursorPosition(Utils.ImGuiToScreen(io.MousePos.ToUnity()));
             }
 
-            io.MousePos = Utils.ScreenToImGui(mouse.position.ReadValue());
+            io.MousePos = Utils.ScreenToImGui(mouse.position.ReadValue()).ToSystem();
 
             var mouseScroll = mouse.scroll.ReadValue() / 4f;
             io.MouseWheel = mouseScroll.y;
@@ -68,7 +68,7 @@ namespace UImGui.Platform
                 return;
 
             var activeTouch = touchscreen.touches[0];
-            io.MousePos = Utils.ScreenToImGui(activeTouch.position.ReadValue());
+            io.MousePos = Utils.ScreenToImGui(activeTouch.position.ReadValue()).ToSystem();
             
             io.MouseWheel = 0;
             io.MouseWheelH = 0;
@@ -154,7 +154,10 @@ namespace UImGui.Platform
                 if (TryMapKeys(key, out ImGuiKey imguikey))
                 {
                     KeyControl keyControl = keyboard[key];
-                    io.AddKeyEvent(imguikey, keyControl.isPressed);
+                    if (keyControl.wasPressedThisFrame)
+                        io.AddKeyEvent(imguikey, true);
+                    else if (keyControl.wasReleasedThisFrame)
+                        io.AddKeyEvent(imguikey, false);
                 }
             }
 
@@ -180,8 +183,8 @@ namespace UImGui.Platform
                 >= Key.F1 and <= Key.F12 => KeyToImGuiKeyShortcut(key, Key.F1, ImGuiKey.F1),
                 >= Key.Numpad0 and <= Key.Numpad9 => KeyToImGuiKeyShortcut(key, Key.Numpad0, ImGuiKey.Keypad0),
                 >= Key.A and <= Key.Z => KeyToImGuiKeyShortcut(key, Key.A, ImGuiKey.A),
-                >= Key.Digit1 and <= Key.Digit9 => KeyToImGuiKeyShortcut(key, Key.Digit1, ImGuiKey._1),
-                Key.Digit0 => ImGuiKey._0,
+                >= Key.Digit1 and <= Key.Digit9 => KeyToImGuiKeyShortcut(key, Key.Digit1, ImGuiKey.Key1),
+                Key.Digit0 => ImGuiKey.Key0,
                 // BUG: mod keys make everything slow. 
                 Key.LeftShift or Key.RightShift => ImGuiKey.ModShift,
                 Key.LeftCtrl or Key.RightCtrl => ImGuiKey.ModCtrl,
@@ -269,9 +272,9 @@ namespace UImGui.Platform
             return true;
         }
 
-        public override void Shutdown(ImGuiIOPtr io)
+        public override void Shutdown(ImGuiIOPtr io, ImGuiPlatformIOPtr pio)
         {
-            base.Shutdown(io);
+            base.Shutdown(io, pio);
             InputSystem.onDeviceChange -= OnDeviceChange;
         }
 

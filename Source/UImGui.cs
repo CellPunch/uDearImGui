@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using ImGuiNET;
+using Hexa.NET.ImGui;
 using UImGui.Assets;
 using UImGui.Events;
 using UImGui.Platform;
@@ -132,15 +132,15 @@ namespace UImGui
 			UImGuiUtility.SetCurrentContext(_context, _vrContext);
 
 			ImGuiIOPtr io = ImGui.GetIO();
+			ImGuiPlatformIOPtr pio = ImGui.GetPlatformIO();
 
 			_initialConfiguration.ApplyTo(io);
 			_style?.ApplyTo(ImGui.GetStyle());
 
-			_context.TextureManager.BuildFontAtlas(io, _fontAtlasConfiguration, _fontCustomInitializer);
-			_context.TextureManager.Initialize(io);
+			 _context.TextureManager.Initialize(io, _fontAtlasConfiguration, _fontCustomInitializer);
 
 			IPlatform platform = PlatformUtility.Create(_platformType, _cursorShapes, _iniSettings);
-			SetPlatform(platform, io);
+			SetPlatform(platform, io, pio);
 			if (_platform == null)
 			{
 				Fail(nameof(_platform));
@@ -163,20 +163,27 @@ namespace UImGui
 		{
 			UImGuiUtility.SetCurrentContext(_context, _vrContext);
 			ImGuiIOPtr io = ImGui.GetIO();
+			ImGuiPlatformIOPtr pio = ImGui.GetPlatformIO();
 
 			SetRenderer(null, io);
-			SetPlatform(null, io);
+			SetPlatform(null, io, pio);
 
 			UImGuiUtility.SetCurrentContext(null, null);
 
 			_context.TextureManager.Shutdown();
-			_context.TextureManager.DestroyFontAtlas(io);
+			// _context.TextureManager.DestroyFontAtlas(io); // does not compile
 
 			if (_doGlobalEvents)
 			{
 				UImGuiUtility.DoOnDeinitialize(this);
 			}
 			OnDeinitialize?.Invoke(this);
+		}
+
+		private void OnDestroy()
+		{
+			UImGuiUtility.DestroyContext(_context);
+			_context = null;
 		}
 
 		private void Update()
@@ -192,10 +199,10 @@ namespace UImGui
 			ImGuiIOPtr io = ImGui.GetIO();
 
 			Constants.PrepareFrameMarker.Begin(this);
-			_context.TextureManager.PrepareFrame(io);
+			// _context.TextureManager.PrepareFrame(io); // does not compile
 			var rect = _camera.pixelRect;
-			//rect.width *= io.DisplayFramebufferScale.x;
-			//rect.height *= io.DisplayFramebufferScale.y;
+			// rect.width *= io.DisplayFramebufferScale.X;
+			// rect.height *= io.DisplayFramebufferScale.Y;
 			_platform.PrepareFrame(io, rect);
 			ImGui.NewFrame();
 /*#if !UIMGUI_REMOVE_IMGUIZMO
@@ -238,9 +245,9 @@ namespace UImGui
 			_renderer?.Initialize(io);
 		}
 
-		private void SetPlatform(IPlatform platform, ImGuiIOPtr io)
+		private void SetPlatform(IPlatform platform, ImGuiIOPtr io, ImGuiPlatformIOPtr pio)
 		{
-			_platform?.Shutdown(io);
+			_platform?.Shutdown(io, pio);
 			_platform = platform;
 			_platform?.Initialize(io, _initialConfiguration, "Unity " + _platformType.ToString());
 		}

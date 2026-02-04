@@ -1,8 +1,8 @@
-﻿using ImGuiNET;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using Hexa.NET.ImGui;
 
 namespace UImGui
 {
@@ -12,13 +12,13 @@ namespace UImGui
 
 		internal static void SetBackendPlatformName(this ImGuiIOPtr io, string name)
 		{
-			if (io.NativePtr->BackendPlatformName != (byte*)0)
+			if (io.BackendPlatformName != (byte*)0)
 			{
-				if (_managedAllocations.Contains((IntPtr)io.NativePtr->BackendPlatformName))
+				if (_managedAllocations.Contains((IntPtr)io.BackendPlatformName))
 				{
-					Marshal.FreeHGlobal(new IntPtr(io.NativePtr->BackendPlatformName));
+					Marshal.FreeHGlobal(new IntPtr(io.BackendPlatformName));
 				}
-				io.NativePtr->BackendPlatformName = (byte*)0;
+				io.BackendPlatformName = (byte*)0;
 			}
 			if (name != null)
 			{
@@ -28,20 +28,20 @@ namespace UImGui
 
 				nativeName[offset] = 0;
 
-				io.NativePtr->BackendPlatformName = nativeName;
+				io.BackendPlatformName = nativeName;
 				_managedAllocations.Add((IntPtr)nativeName);
 			}
 		}
 
 		internal static void SetIniFilename(this ImGuiIOPtr io, string name)
 		{
-			if (io.NativePtr->IniFilename != (byte*)0)
+			if (io.IniFilename != (byte*)0)
 			{
-				if (_managedAllocations.Contains((IntPtr)io.NativePtr->IniFilename))
+				if (_managedAllocations.Contains((IntPtr)io.IniFilename))
 				{
-					Marshal.FreeHGlobal((IntPtr)io.NativePtr->IniFilename);
+					Marshal.FreeHGlobal((IntPtr)io.IniFilename);
 				}
-				io.NativePtr->IniFilename = (byte*)0;
+				io.IniFilename = (byte*)0;
 			}
 			if (name != null)
 			{
@@ -51,19 +51,19 @@ namespace UImGui
 
 				nativeName[offset] = 0;
 
-				io.NativePtr->IniFilename = nativeName;
+				io.IniFilename = nativeName;
 				_managedAllocations.Add((IntPtr)nativeName);
 			}
 		}
 
 		public static void SetBackendRendererName(this ImGuiIOPtr io, string name)
 		{
-			if (io.NativePtr->BackendRendererName != (byte*)0)
+			if (io.BackendRendererName != (byte*)0)
 			{
-				if (_managedAllocations.Contains((IntPtr)io.NativePtr->BackendRendererName))
+				if (_managedAllocations.Contains((IntPtr)io.BackendRendererName))
 				{
-					Marshal.FreeHGlobal((IntPtr)io.NativePtr->BackendRendererName);
-					io.NativePtr->BackendRendererName = (byte*)0;
+					Marshal.FreeHGlobal((IntPtr)io.BackendRendererName);
+					io.BackendRendererName = (byte*)0;
 				}
 			}
 			if (name != null)
@@ -74,7 +74,7 @@ namespace UImGui
 
 				nativeName[offset] = 0;
 
-				io.NativePtr->BackendRendererName = nativeName;
+				io.BackendRendererName = nativeName;
 				_managedAllocations.Add((IntPtr)nativeName);
 			}
 		}

@@ -1,4 +1,4 @@
-﻿using ImGuiNET;
+﻿using Hexa.NET.ImGui;
 using UnityEngine;
 
 namespace UImGui.Platform
@@ -19,7 +19,7 @@ namespace UImGui.Platform
 		/// 
 		/// </summary>
 		/// <param name="io"></param>
-		void Shutdown(ImGuiIOPtr io);
+		void Shutdown(ImGuiIOPtr io, ImGuiPlatformIOPtr pio);
 
 		/// <summary>
 		/// 

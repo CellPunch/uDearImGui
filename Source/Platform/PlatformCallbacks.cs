@@ -1,7 +1,7 @@
 ﻿using AOT;
-using ImGuiNET;
 using System;
 using System.Runtime.InteropServices;
+using Hexa.NET.ImGui;
 using UnityEngine;
 
 namespace UImGui.Platform
@@ -49,16 +49,16 @@ namespace UImGui.Platform
 			_setClipboardText = setCb;
 		}
 
-		public void Assign(ImGuiIOPtr io)
+		public void Assign(ImGuiPlatformIOPtr io)
 		{
-			io.SetClipboardTextFn = Marshal.GetFunctionPointerForDelegate(_setClipboardText);
-			io.GetClipboardTextFn = Marshal.GetFunctionPointerForDelegate(_getClipboardText);
+			io.PlatformSetClipboardTextFn = (void*)Marshal.GetFunctionPointerForDelegate(_setClipboardText);
+			io.PlatformGetClipboardTextFn = (void*)Marshal.GetFunctionPointerForDelegate(_getClipboardText);
 		}
 
-		public void Unset(ImGuiIOPtr io)
+		public void Unset(ImGuiPlatformIOPtr io)
 		{
-			io.SetClipboardTextFn = IntPtr.Zero;
-			io.GetClipboardTextFn = IntPtr.Zero;
+			io.PlatformSetClipboardTextFn = (void*)IntPtr.Zero;
+			io.PlatformGetClipboardTextFn = (void*)IntPtr.Zero;
 		}
 
 		public static GetClipboardTextSafeCallback GetClipboardText

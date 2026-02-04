@@ -1,5 +1,5 @@
-﻿using ImGuiNET;
-using System;
+﻿using System;
+using Hexa.NET.ImGui;
 using UnityEngine;
 
 namespace UImGui
@@ -75,13 +75,13 @@ namespace UImGui
 
 		public void SetDefaults()
 		{
-			IntPtr context = ImGui.CreateContext();
+			ImGuiContextPtr context = ImGui.CreateContext();
 			ImGui.SetCurrentContext(context);
 			SetFrom(ImGui.GetIO());
 			ImGui.DestroyContext(context);
 		}
 
-		public void ApplyTo(ImGuiIOPtr io)
+		public unsafe void ApplyTo(ImGuiIOPtr io)
 		{
 			io.ConfigFlags = ImGuiConfig;
 
@@ -92,10 +92,9 @@ namespace UImGui
 			io.KeyRepeatDelay = KeyRepeatDelay;
 			io.KeyRepeatRate = KeyRepeatRate;
 
-			io.FontGlobalScale = FontGlobalScale;
 			io.FontAllowUserScaling = FontAllowUserScaling;
 
-			io.DisplayFramebufferScale = DisplayFramebufferScale;
+			io.DisplayFramebufferScale = DisplayFramebufferScale.ToSystem();
 			io.MouseDrawCursor = MouseDrawCursor;
 
 			io.ConfigDockingNoSplit = ConfigDockingNoSplit;
@@ -107,10 +106,10 @@ namespace UImGui
 			io.ConfigWindowsMoveFromTitleBarOnly = MoveFromTitleOnly;
 			io.ConfigMemoryCompactTimer = ConfigMemoryCompactTimer;
 
-			io.UserData = UserData;
+			io.UserData = (void*)UserData;
 		}
 
-		public void SetFrom(ImGuiIOPtr io)
+		public unsafe void SetFrom(ImGuiIOPtr io)
 		{
 			ImGuiConfig = io.ConfigFlags;
 
@@ -121,10 +120,9 @@ namespace UImGui
 			KeyRepeatDelay = io.KeyRepeatDelay;
 			KeyRepeatRate = io.KeyRepeatRate;
 
-			FontGlobalScale = io.FontGlobalScale;
 			FontAllowUserScaling = io.FontAllowUserScaling;
 
-			DisplayFramebufferScale = io.DisplayFramebufferScale;
+			DisplayFramebufferScale = io.DisplayFramebufferScale.ToUnity();
 			MouseDrawCursor = io.MouseDrawCursor;
 
 			ConfigDockingNoSplit = io.ConfigDockingNoSplit;
@@ -136,7 +134,7 @@ namespace UImGui
 			MoveFromTitleOnly = io.ConfigWindowsMoveFromTitleBarOnly;
 			ConfigMemoryCompactTimer = io.ConfigMemoryCompactTimer;
 
-			UserData = io.UserData;
+			UserData = (IntPtr)io.UserData;
 		}
 	}
 }

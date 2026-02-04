@@ -1,4 +1,4 @@
-﻿using ImGuiNET;
+﻿using Hexa.NET.ImGui;
 using UImGui.Assets;
 using UnityEngine;
 
@@ -86,7 +86,7 @@ namespace UImGui.Platform
 				>= KeyCode.F1 and <= KeyCode.F12 => KeyToImGuiKeyShortcut(key, KeyCode.F1, ImGuiKey.F1),
 				>= KeyCode.Keypad0 and <= KeyCode.Keypad9 => KeyToImGuiKeyShortcut(key, KeyCode.Keypad0, ImGuiKey.Keypad0),
 				>= KeyCode.A and <= KeyCode.Z => KeyToImGuiKeyShortcut(key, KeyCode.A, ImGuiKey.A),
-				>= KeyCode.Alpha0 and <= KeyCode.Alpha9 => KeyToImGuiKeyShortcut(key, KeyCode.Alpha0, ImGuiKey._0),
+				>= KeyCode.Alpha0 and <= KeyCode.Alpha9 => KeyToImGuiKeyShortcut(key, KeyCode.Alpha0, ImGuiKey.Key0),
 				// BUG: mod keys make everything slow. 
 				// KeyCode.LeftShift or KeyCode.RightShift => ImGuiKey.ModShift,
 				// KeyCode.LeftControl or KeyCode.RightControl => ImGuiKey.ModCtrl,

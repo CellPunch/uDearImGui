@@ -1,8 +1,8 @@
 ﻿#if UNITY_2020_1_OR_NEWER
-using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Hexa.NET.ImGui;
 using UImGui.Assets;
 using UImGui.Texture;
 using Unity.Collections;
@@ -85,11 +85,13 @@ namespace UImGui.Renderer
 
 		public void RenderDrawLists(List<DrawCommand> commands, ImDrawDataPtr drawData)
 		{
-			Vector2 fbOSize = drawData.DisplaySize * drawData.FramebufferScale;
+			System.Numerics.Vector2 fbOSize = drawData.DisplaySize * drawData.FramebufferScale;
 
 			// Avoid rendering when minimized.
-			if (fbOSize.x <= 0f || fbOSize.y <= 0f || drawData.TotalVtxCount == 0) return;
+			if (fbOSize.X <= 0f || fbOSize.Y <= 0f || drawData.TotalVtxCount == 0) return;
 
+			_textureManager.UpdateTextures(ref drawData.Textures);
+			
 			Constants.UpdateMeshMarker.Begin();
 			UpdateMesh(drawData);
 			Constants.UpdateMeshMarker.End();
@@ -161,7 +163,7 @@ namespace UImGui.Renderer
 					// Define subMeshes.
 					for (int i = 0, iMax = drawList.CmdBuffer.Size; i < iMax; ++i)
 					{
-						ImDrawCmdPtr cmd = drawList.CmdBuffer[i];
+						ImDrawCmd cmd = drawList.CmdBuffer[i];
 						SubMeshDescriptor descriptor = new SubMeshDescriptor
 						{
 							topology = MeshTopology.Triangles,
@@ -181,24 +183,24 @@ namespace UImGui.Renderer
 			_mesh.UploadMeshData(false);
 		}
 
-		private void CreateDrawCommands(List<DrawCommand> commands, ImDrawDataPtr drawData, Vector2 fbSize)
+		private unsafe void CreateDrawCommands(List<DrawCommand> commands, ImDrawDataPtr drawData, System.Numerics.Vector2 fbSize)
 		{
-			IntPtr prevTextureId = IntPtr.Zero;
-			Vector4 clipOffset = new Vector4(drawData.DisplayPos.x, drawData.DisplayPos.y,
-				drawData.DisplayPos.x, drawData.DisplayPos.y);
-			Vector4 clipScale = new Vector4(drawData.FramebufferScale.x, drawData.FramebufferScale.y,
-				drawData.FramebufferScale.x, drawData.FramebufferScale.y);
+			ImTextureID prevTextureId = ImTextureID.Null;
+			Vector4 clipOffset = new Vector4(drawData.DisplayPos.X, drawData.DisplayPos.Y,
+				drawData.DisplayPos.X, drawData.DisplayPos.Y);
+			Vector4 clipScale = new Vector4(drawData.FramebufferScale.X, drawData.FramebufferScale.Y,
+				drawData.FramebufferScale.X, drawData.FramebufferScale.Y);
 
 			commands.Add(new DrawCommand()
 			{
 				type = DrawCommandType.SetViewport,
-				vectorData = new Vector4(0f, 0f, fbSize.x, fbSize.y)
+				vectorData = new Vector4(0f, 0f, fbSize.X, fbSize.Y)
 			});
 			commands.Add(new DrawCommand()
 			{
 				type = DrawCommandType.SetViewProjectionMatrices,
-				matrixA = Matrix4x4.Translate(new Vector3(0.5f / fbSize.x, 0.5f / fbSize.y, 0f)), // Small adjustment to improve text.
-				matrixB = Matrix4x4.Ortho(0f, fbSize.x, fbSize.y, 0f, 0f, 1f)
+				matrixA = Matrix4x4.Translate(new Vector3(0.5f / fbSize.X, 0.5f / fbSize.Y, 0f)), // Small adjustment to improve text.
+				matrixB = Matrix4x4.Ortho(0f, fbSize.X, fbSize.Y, 0f, 0f, 1f)
 			});
 			//commandBuffer.SetViewport(new Rect(0f, 0f, fbSize.x, fbSize.y));
 			/*commandBuffer.SetViewProjectionMatrices(
@@ -212,26 +214,26 @@ namespace UImGui.Renderer
 				ImDrawListPtr drawList = drawData.CmdLists[n];
 				for (int i = 0, iMax = drawList.CmdBuffer.Size; i < iMax; ++i, ++subOf)
 				{
-					ImDrawCmdPtr drawCmd = drawList.CmdBuffer[i];
-					if (drawCmd.UserCallback != IntPtr.Zero)
+					ImDrawCmd drawCmd = drawList.CmdBuffer[i];
+					if (drawCmd.UserCallback != (void*)IntPtr.Zero)
 					{
-						UserDrawCallback userDrawCallback = Marshal.GetDelegateForFunctionPointer<UserDrawCallback>(drawCmd.UserCallback);
+						UserDrawCallback userDrawCallback = Marshal.GetDelegateForFunctionPointer<UserDrawCallback>((IntPtr)drawCmd.UserCallback);
 						userDrawCallback(drawList, drawCmd);
 					}
 					else
 					{
 						// Project scissor rectangle into framebuffer space and skip if fully outside.
-						Vector4 clipSize = drawCmd.ClipRect - clipOffset;
+						var clipSize = drawCmd.ClipRect.ToUnity() - clipOffset;
 						Vector4 clip = Vector4.Scale(clipSize, clipScale);
 
-						if (clip.x >= fbSize.x || clip.y >= fbSize.y || clip.z < 0f || clip.w < 0f) continue;
+						if (clip.x >= fbSize.X || clip.y >= fbSize.Y || clip.z < 0f || clip.w < 0f) continue;
 
-						if (prevTextureId != drawCmd.TextureId)
+						if (prevTextureId != drawCmd.GetTexID())
 						{
-							prevTextureId = drawCmd.TextureId;
+							prevTextureId = drawCmd.GetTexID();
 
 							// TODO: Implement ImDrawCmdPtr.GetTexID().
-							bool hasTexture = _textureManager.TryGetTexture(prevTextureId, out UnityEngine.Texture texture);
+							bool hasTexture = _textureManager.TryGetTexture(prevTextureId, out Texture2D texture);
 							Assert.IsTrue(hasTexture, $"Texture {prevTextureId} does not exist. Try to use UImGuiUtility.GetTextureID().");
 
 							commands.Add(new DrawCommand()
@@ -251,7 +253,7 @@ namespace UImGui.Renderer
 						commands.Add(new DrawCommand()
 						{
 							 type = DrawCommandType.EnableScissorRect,
-							 vectorData = new Vector4(clip.x, fbSize.y - clip.w, clip.z - clip.x, clip.w - clip.y)
+							 vectorData = new Vector4(clip.x, fbSize.Y - clip.w, clip.z - clip.x, clip.w - clip.y)
 						});
 						commands.Add(new DrawCommand()
 						{

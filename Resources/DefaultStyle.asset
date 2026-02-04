@@ -12,97 +12,182 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33d496755d9bce04b8e1fd75c1fa4673, type: 3}
   m_Name: DefaultStyle
   m_EditorClassIdentifier: 
-  Alpha: 1
-  WindowPadding: {x: 8, y: 8}
-  WindowRounding: 7
-  WindowBorderSize: 1
-  WindowMinSize: {x: 32, y: 32}
-  WindowTitleAlign: {x: 0, y: 0.5}
-  WindowMenuButtonPosition: 0
-  ChildRounding: 0
-  ChildBorderSize: 1
-  PopupRounding: 0
-  PopupBorderSize: 1
-  FramePadding: {x: 4, y: 3}
-  FrameRounding: 0
-  FrameBorderSize: 0
-  ItemSpacing: {x: 8, y: 4}
-  ItemInnerSpacing: {x: 4, y: 4}
-  CellPadding: {x: 0, y: 0}
-  TouchExtraPadding: {x: 0, y: 0}
-  IndentSpacing: 21
-  ColumnsMinSpacing: 6
-  ScrollbarSize: 14
-  ScrollbarRounding: 9
-  GrabMinSize: 10
-  GrabRounding: 0
-  LogSliderDeadzone: 0
-  TabRounding: 4
-  TabBorderSize: 0
-  ColorButtonPosition: 1
-  ButtonTextAlign: {x: 0.5, y: 0.5}
-  SelectableTextAlign: {x: 0, y: 0}
-  DisplayWindowPadding: {x: 19, y: 19}
-  DisplaySafeAreaPadding: {x: 3, y: 3}
-  MouseCursorScale: 1
-  AntiAliasedLines: 1
-  AntiAliasedLinesUseTex: 1
-  AntiAliasedFill: 1
-  CurveTessellationTol: 2
-  CircleTessellationMaxError: 2
-  Colors:
-  - {r: 1, g: 1, b: 1, a: 1}
-  - {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
-  - {r: 0.058823533, g: 0.058823533, b: 0.058823533, a: 0.9019608}
-  - {r: 0, g: 0, b: 0, a: 0.5254902}
-  - {r: 0.078431375, g: 0.078431375, b: 0.078431375, a: 1}
-  - {r: 0.43137258, g: 0.43137258, b: 0.5019608, a: 0.54509807}
-  - {r: 0, g: 0, b: 0, a: 0.59607846}
-  - {r: 0.16078432, g: 0.2901961, b: 0.4784314, a: 0.6117647}
-  - {r: 0.25882354, g: 0.5882353, b: 0.9803922, a: 0.5372549}
-  - {r: 0.25882354, g: 0.5882353, b: 0.9803922, a: 0.65882355}
-  - {r: 0.039215688, g: 0.039215688, b: 0.039215688, a: 1}
-  - {r: 0.16078432, g: 0.2901961, b: 0.4784314, a: 1}
-  - {r: 0, g: 0, b: 0, a: 0.53333336}
-  - {r: 0.14117648, g: 0.14117648, b: 0.14117648, a: 1}
-  - {r: 0.019607844, g: 0.019607844, b: 0.019607844, a: 0.5176471}
-  - {r: 0.30980393, g: 0.30980393, b: 0.30980393, a: 1}
-  - {r: 0.41176474, g: 0.41176474, b: 0.41176474, a: 1}
-  - {r: 0.50980395, g: 0.50980395, b: 0.50980395, a: 1}
-  - {r: 0.25882354, g: 0.5882353, b: 0.9803922, a: 1}
-  - {r: 0.25882354, g: 0.5882353, b: 0.9803922, a: 1}
-  - {r: 0.25882354, g: 0.5882353, b: 0.9803922, a: 1}
-  - {r: 0.25882354, g: 0.5882353, b: 0.9803922, a: 0.3529412}
-  - {r: 0.25882354, g: 0.5882353, b: 0.9803922, a: 1}
-  - {r: 0.058823533, g: 0.5294118, b: 0.9803922, a: 1}
-  - {r: 0.25882354, g: 0.5882353, b: 0.9803922, a: 0.3529412}
-  - {r: 0.25882354, g: 0.5882353, b: 0.9803922, a: 0.87058824}
-  - {r: 0.25882354, g: 0.5882353, b: 0.9803922, a: 0.7294118}
-  - {r: 0.43137258, g: 0.43137258, b: 0.5019608, a: 0.4117647}
-  - {r: 0.10196079, g: 0.40000004, b: 0.7490196, a: 0.59607846}
-  - {r: 0.10196079, g: 0.40000004, b: 0.7490196, a: 1}
-  - {r: 0.25882354, g: 0.5882353, b: 0.9803922, a: 0.34117648}
-  - {r: 0.25882354, g: 0.5882353, b: 0.9803922, a: 0.79607844}
-  - {r: 0.25882354, g: 0.5882353, b: 0.9803922, a: 1}
-  - {r: 0.18039216, g: 0.34901962, b: 0.5803922, a: 0.89411765}
-  - {r: 0.25882354, g: 0.5882353, b: 0.9803922, a: 0.78039217}
-  - {r: 0.20000002, g: 0.41176474, b: 0.6784314, a: 1}
-  - {r: 0.06666667, g: 0.10196079, b: 0.14901961, a: 0.94509804}
-  - {r: 0.13725491, g: 0.2627451, b: 0.42352945, a: 1}
-  - {r: 0.6117647, g: 0.6117647, b: 0.6117647, a: 1}
-  - {r: 1, g: 0.43137258, b: 0.34901962, a: 1}
-  - {r: 0.90196085, g: 0.7019608, b: 0, a: 1}
-  - {r: 1, g: 0.6, b: 0, a: 1}
-  - {r: 0.25882354, g: 0.5882353, b: 0.9803922, a: 0.34117648}
-  - {r: 1, g: 1, b: 0, a: 0.78039217}
-  - {r: 0.25882354, g: 0.5882353, b: 0.9803922, a: 1}
-  - {r: 1, g: 1, b: 1, a: 0.6745098}
-  - {r: 0.8000001, g: 0.8000001, b: 0.8000001, a: 0.30588236}
-  - {r: 0.8000001, g: 0.8000001, b: 0.8000001, a: 0.38431373}
-  - {r: 0.8000001, g: 0.8000001, b: 0.8000001, a: 1}
-  - {r: 0, g: 0, b: 0, a: 1}
-  - {r: 0, g: 1, b: 0, a: 1}
-  - {r: 1, g: 0, b: 0.9449339, a: 1}
-  - {r: 1, g: 0, b: 0.69310665, a: 1}
-  - {r: 0.11671257, g: 0, b: 1, a: 1}
-  - {r: 0, g: 0, b: 1, a: 1}
+  alpha: 1
+  disabledAlpha: 0.6
+  windowPadding: {x: 8, y: 8}
+  windowRounding: 7
+  windowBorderSize: 1
+  windowBorderHoverPadding: 4
+  windowMinSize: {x: 32, y: 32}
+  windowTitleAlign: {x: 0, y: 0.5}
+  windowMenuButtonPosition: 0
+  childRounding: 0
+  childBorderSize: 1
+  popupRounding: 0
+  popupBorderSize: 1
+  framePadding: {x: 4, y: 3}
+  frameRounding: 0
+  frameBorderSize: 0
+  itemSpacing: {x: 8, y: 4}
+  itemInnerSpacing: {x: 4, y: 4}
+  cellPadding: {x: 4, y: 2}
+  touchExtraPadding: {x: 0, y: 0}
+  indentSpacing: 21
+  columnsMinSpacing: 6
+  scrollbarSize: 14
+  scrollbarRounding: 9
+  scrollbarPadding: 2
+  grabMinSize: 10
+  grabRounding: 0
+  logSliderDeadzone: 4
+  imageBorderSize: 0
+  tabRounding: 4
+  tabBorderSize: 0
+  tabMinWidthBase: 1
+  tabMinWidthShrink: 80
+  tabCloseButtonMinWidthSelected: -1
+  tabCloseButtonMinWidthUnselected: 0
+  tabBarBorderSize: 1
+  tabBarOverlineSize: 1
+  tableAngledHeadersAngle: 0.61086524
+  tableAngledHeadersTextAlign: {x: 0.5, y: 0}
+  treeLinesFlags: 262144
+  treeLinesSize: 1
+  treeLinesRounding: 0
+  colorButtonPosition: 1
+  buttonTextAlign: {x: 0.5, y: 0.5}
+  selectableTextAlign: {x: 0, y: 0}
+  separatorTextBorderSize: 3
+  separatorTextAlign: {x: 0, y: 0.5}
+  separatorTextPadding: {x: 20, y: 3}
+  displayWindowPadding: {x: 19, y: 19}
+  displaySafeAreaPadding: {x: 3, y: 3}
+  mouseCursorScale: 1
+  antiAliasedLines: 1
+  antiAliasedLinesUseTex: 1
+  antiAliasedFill: 1
+  curveTessellationTol: 2
+  circleTessellationMaxError: 2
+  colors:
+    m_Keys:
+    - Text
+    - TextDisabled
+    - WindowBg
+    - ChildBg
+    - PopupBg
+    - Border
+    - BorderShadow
+    - FrameBg
+    - FrameBgHovered
+    - FrameBgActive
+    - TitleBg
+    - TitleBgActive
+    - TitleBgCollapsed
+    - MenuBarBg
+    - ScrollbarBg
+    - ScrollbarGrab
+    - ScrollbarGrabHovered
+    - ScrollbarGrabActive
+    - CheckMark
+    - SliderGrab
+    - SliderGrabActive
+    - Button
+    - ButtonHovered
+    - ButtonActive
+    - Header
+    - HeaderHovered
+    - HeaderActive
+    - Separator
+    - SeparatorHovered
+    - SeparatorActive
+    - ResizeGrip
+    - ResizeGripHovered
+    - ResizeGripActive
+    - InputTextCursor
+    - TabHovered
+    - Tab
+    - TabSelected
+    - TabSelectedOverline
+    - TabDimmed
+    - TabDimmedSelected
+    - TabDimmedSelectedOverline
+    - DockingPreview
+    - DockingEmptyBg
+    - PlotLines
+    - PlotLinesHovered
+    - PlotHistogram
+    - PlotHistogramHovered
+    - TableHeaderBg
+    - TableBorderStrong
+    - TableBorderLight
+    - TableRowBg
+    - TableRowBgAlt
+    - TextLink
+    - TextSelectedBg
+    - TreeLines
+    - DragDropTarget
+    - NavCursor
+    - NavWindowingHighlight
+    - NavWindowingDimBg
+    - ModalWindowDimBg
+    m_Values:
+    - {r: 1, g: 1, b: 1, a: 1}
+    - {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - {r: 0.06, g: 0.06, b: 0.06, a: 0.94}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0.08, g: 0.08, b: 0.08, a: 0.94}
+    - {r: 0.43, g: 0.43, b: 0.5, a: 0.5}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0.16, g: 0.29, b: 0.48, a: 0.54}
+    - {r: 0.26, g: 0.59, b: 0.98, a: 0.4}
+    - {r: 0.26, g: 0.59, b: 0.98, a: 0.67}
+    - {r: 0.04, g: 0.04, b: 0.04, a: 1}
+    - {r: 0.16, g: 0.29, b: 0.48, a: 1}
+    - {r: 0, g: 0, b: 0, a: 0.51}
+    - {r: 0.14, g: 0.14, b: 0.14, a: 1}
+    - {r: 0.02, g: 0.02, b: 0.02, a: 0.53}
+    - {r: 0.31, g: 0.31, b: 0.31, a: 1}
+    - {r: 0.41, g: 0.41, b: 0.41, a: 1}
+    - {r: 0.51, g: 0.51, b: 0.51, a: 1}
+    - {r: 0.26, g: 0.59, b: 0.98, a: 1}
+    - {r: 0.24, g: 0.52, b: 0.88, a: 1}
+    - {r: 0.26, g: 0.59, b: 0.98, a: 1}
+    - {r: 0.26, g: 0.59, b: 0.98, a: 0.4}
+    - {r: 0.26, g: 0.59, b: 0.98, a: 1}
+    - {r: 0.06, g: 0.53, b: 0.98, a: 1}
+    - {r: 0.26, g: 0.59, b: 0.98, a: 0.31}
+    - {r: 0.26, g: 0.59, b: 0.98, a: 0.8}
+    - {r: 0.26, g: 0.59, b: 0.98, a: 1}
+    - {r: 0.43, g: 0.43, b: 0.5, a: 0.5}
+    - {r: 0.1, g: 0.4, b: 0.75, a: 0.78}
+    - {r: 0.1, g: 0.4, b: 0.75, a: 1}
+    - {r: 0.26, g: 0.59, b: 0.98, a: 0.2}
+    - {r: 0.26, g: 0.59, b: 0.98, a: 0.67}
+    - {r: 0.26, g: 0.59, b: 0.98, a: 0.95}
+    - {r: 1, g: 1, b: 1, a: 1}
+    - {r: 0.26, g: 0.59, b: 0.98, a: 0.8}
+    - {r: 0.17999999, g: 0.34999996, b: 0.58000004, a: 0.862}
+    - {r: 0.19999999, g: 0.40999997, b: 0.68, a: 1}
+    - {r: 0.26, g: 0.59, b: 0.98, a: 1}
+    - {r: 0.068, g: 0.10199998, b: 0.14800003, a: 0.9724}
+    - {r: 0.13599998, g: 0.26199996, b: 0.424, a: 1}
+    - {r: 0.5, g: 0.5, b: 0.5, a: 0}
+    - {r: 0.26, g: 0.59, b: 0.98, a: 0.7}
+    - {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    - {r: 0.61, g: 0.61, b: 0.61, a: 1}
+    - {r: 1, g: 0.43, b: 0.35, a: 1}
+    - {r: 0.9, g: 0.7, b: 0, a: 1}
+    - {r: 1, g: 0.6, b: 0, a: 1}
+    - {r: 0.19, g: 0.19, b: 0.2, a: 1}
+    - {r: 0.31, g: 0.31, b: 0.35, a: 1}
+    - {r: 0.23, g: 0.23, b: 0.25, a: 1}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 1, g: 1, b: 1, a: 0.06}
+    - {r: 0.26, g: 0.59, b: 0.98, a: 1}
+    - {r: 0.26, g: 0.59, b: 0.98, a: 0.35}
+    - {r: 0.43, g: 0.43, b: 0.5, a: 0.5}
+    - {r: 1, g: 1, b: 0, a: 0.9}
+    - {r: 0.26, g: 0.59, b: 0.98, a: 1}
+    - {r: 1, g: 1, b: 1, a: 0.7}
+    - {r: 0.8, g: 0.8, b: 0.8, a: 0.2}
+    - {r: 0.8, g: 0.8, b: 0.8, a: 0.35}

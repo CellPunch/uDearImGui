@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using ImGuiNET;
+﻿using Hexa.NET.ImGui;
 using UnityEngine;
 using Matrix4x4 = UnityEngine.Matrix4x4;
 using Plane = UnityEngine.Plane;
@@ -64,8 +63,8 @@ namespace UImGui.VR
 
             var drawData = ImGui.GetDrawData(); //TODO: This looks bad, maybe we can safely use Screen class for getting display size 
             
-            float w = drawData.DisplaySize.x;
-            float h = drawData.DisplaySize.y;
+            float w = drawData.DisplaySize.X;
+            float h = drawData.DisplaySize.Y;
             
             
             float scale = 1f / _config.pixelsPerUnit;

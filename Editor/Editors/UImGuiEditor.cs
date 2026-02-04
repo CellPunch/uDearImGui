@@ -1,5 +1,5 @@
-using ImGuiNET;
 using System.Text;
+using Hexa.NET.ImGui;
 using UImGui.Platform;
 using UImGui.Renderer;
 using UnityEditor;
@@ -90,8 +90,8 @@ namespace UImGui.Editor
                 EditorGUILayout.LabelField("Debug");
 
                 EditorGUI.BeginDisabledGroup(true);
-                EditorGUILayout.ObjectField("Atlas texture", UImGuiUtility.Context.TextureManager.AtalsTexture,
-                    typeof(UnityEngine.Texture), false);
+                /*EditorGUILayout.ObjectField("Atlas texture", UImGuiUtility.Context.TextureManager.AtalsTexture,
+                    typeof(UnityEngine.Texture), false);*/ // does not compile
                 EditorGUI.EndDisabledGroup();
             }
         }
@@ -124,7 +124,7 @@ namespace UImGui.Editor
 
         private void CheckRequirements()
         {
-            var textImGui = $"ImGUI: {ImGui.GetVersion()}";
+            var textImGui = $"ImGUI: {ImGui.GetVersionS()}";
 
             EditorGUILayout.LabelField(textImGui);
             EditorGUILayout.Space();
@@ -148,11 +148,11 @@ namespace UImGui.Editor
             {
                 _messages.AppendLine("Platform not available.");
             }
-            else if ((InputType)_platform.enumValueIndex != InputType.InputSystem &&
+            /*else if ((InputType)_platform.enumValueIndex != InputType.InputSystem &&
                      (configFlags.intValue & (int)ImGuiConfigFlags.NavEnableSetMousePos) != 0)
             {
                 _messages.AppendLine("Will not work NavEnableSetPos with InputManager.");
-            }
+            }*/
 
             if ((configFlags.intValue & (int)ImGuiConfigFlags.ViewportsEnable) != 0)
             {

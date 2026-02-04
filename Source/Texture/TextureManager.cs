@@ -1,4 +1,4 @@
-﻿using ImGuiNET;
+﻿using Hexa.NET.ImGui;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -7,12 +7,13 @@ using UImGui.Events;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
+using Object = UnityEngine.Object;
 using UTexture = UnityEngine.Texture;
 
 namespace UImGui.Texture
 {
 	// TODO: Write documentation for methods
-	internal class TextureManager
+	internal class OldTextureManager
 	{
 		private Texture2D _atlasTexture;
 
@@ -26,7 +27,8 @@ namespace UImGui.Texture
 		public unsafe void Initialize(ImGuiIOPtr io)
 		{
 			ImFontAtlasPtr atlasPtr = io.Fonts;
-			atlasPtr.GetTexDataAsRGBA32(out byte* pixels, out int width, out int height, out int bytesPerPixel);
+			// atlasPtr.GetTexDataAsRGBA32(out byte* pixels, out int width, out int height, out int bytesPerPixel); // does not compile
+			byte* pixels = null; int width = 0, height = 0; int bytesPerPixel = 0;
 
 			_atlasTexture = new Texture2D(width, height, TextureFormat.RGBA32, true, true)
 			{
@@ -67,7 +69,7 @@ namespace UImGui.Texture
 		public void PrepareFrame(ImGuiIOPtr io)
 		{
 			IntPtr id = RegisterTexture(_atlasTexture);
-			io.Fonts.SetTexID(id);
+			// io.Fonts.SetTexID(id); // does not compile
 		}
 
 		public bool TryGetTexture(IntPtr id, out UTexture texture)
@@ -107,7 +109,7 @@ namespace UImGui.Texture
 
 		public unsafe void BuildFontAtlas(ImGuiIOPtr io, in FontAtlasConfigAsset settings, FontInitializerEvent custom)
 		{
-			if (io.Fonts.IsBuilt())
+			if (io.Fonts.TexIsBuilt)
 			{
 				DestroyFontAtlas(io);
 			}
@@ -128,8 +130,8 @@ namespace UImGui.Texture
 					io.Fonts.AddFontDefault();
 				}
 
-				io.NativePtr->FontDefault = io.Fonts.Fonts[0];
-				io.Fonts.Build();
+				io.FontDefault = io.Fonts.Fonts[0];
+				// io.Fonts.Build(); // does not compile
 				return;
 			}
 
@@ -162,7 +164,7 @@ namespace UImGui.Texture
 				io.Fonts.AddFontDefault();
 			}
 
-			io.Fonts.Build();
+			 //io.Fonts.Build(); //does not compile
 		}
 
 		public unsafe void DestroyFontAtlas(ImGuiIOPtr io)
@@ -170,19 +172,19 @@ namespace UImGui.Texture
 			FreeGlyphRangeArrays();
 
 			io.Fonts.Clear(); // Previous FontDefault reference no longer valid.
-			io.NativePtr->FontDefault = default; // NULL uses Fonts[0].
+			io.FontDefault = default; // NULL uses Fonts[0].
 		}
 
-		private unsafe IntPtr AllocateGlyphRangeArray(in FontConfig fontConfig)
+		private unsafe uint* AllocateGlyphRangeArray(in FontConfig fontConfig)
 		{
-			List<ushort> values = fontConfig.BuildRanges();
+			List<uint> values = fontConfig.BuildRanges();
 			if (values.Count == 0)
 			{
-				return IntPtr.Zero;
+				return null;
 			}
 
-			int byteCount = sizeof(ushort) * (values.Count + 1); // terminating zero.
-			ushort* ranges = (ushort*)Marshal.AllocHGlobal(byteCount);
+			int byteCount = sizeof(uint) * (values.Count + 1); // terminating zero.
+			uint* ranges = (uint*)Marshal.AllocHGlobal(byteCount);
 			_allocatedGlyphRangeArrays.Add((IntPtr)ranges);
 
 			for (int i = 0; i < values.Count; ++i)
@@ -191,7 +193,7 @@ namespace UImGui.Texture
 			}
 			ranges[values.Count] = 0;
 
-			return (IntPtr)ranges;
+			return ranges;
 		}
 
 		private unsafe void FreeGlyphRangeArrays()
@@ -202,6 +204,107 @@ namespace UImGui.Texture
 			}
 
 			_allocatedGlyphRangeArrays.Clear();
+		}
+	}
+
+	internal class TextureManager
+	{
+		private readonly Dictionary<IntPtr, Texture2D> _textures = new Dictionary<IntPtr, Texture2D>();
+
+		public void Initialize(ImGuiIOPtr io, FontAtlasConfigAsset fontAtlasConfiguration, FontInitializerEvent fontCustomInitializer)
+		{
+			
+			if (fontCustomInitializer.GetPersistentEventCount() > 0)
+			{
+				fontCustomInitializer.Invoke(io);
+			}
+			else
+			{
+				unsafe
+				{
+					io.Fonts.AddFontDefault();
+				}
+				io.FontDefault = io.Fonts.Fonts[0];
+			}
+			
+			// TODO: maybe implement adding fonts from FontAtlasConfigAsset
+			
+			if (io.Fonts.Fonts.Size == 0)
+			{
+				unsafe
+				{
+					io.Fonts.AddFontDefault();
+				}
+			}
+		}
+
+		public void UpdateTextures(ref ImVector<ImTextureDataPtr> drawDataTextures)
+		{
+			if (drawDataTextures.Size == 0) return;
+			for (int i = 0; i < drawDataTextures.Size; i++)
+			{
+				UpdateTexture(drawDataTextures[i]);
+			}
+		}
+		
+		private void UpdateTexture(ImTextureDataPtr texture)
+		{
+			switch (texture.Status)
+			{
+				case ImTextureStatus.Ok:
+					break;
+				case ImTextureStatus.WantCreate:
+					Texture2D texture2D = new Texture2D(texture.Width, texture.Height, TextureFormat.RGBA32, true, true);
+					texture.SetTexID(texture2D.GetNativeTexturePtr());
+					_textures.Add(texture.TexID, texture2D);
+					goto case ImTextureStatus.WantUpdates;
+				case ImTextureStatus.WantUpdates:
+					texture2D =	_textures[texture.TexID];
+					unsafe
+					{
+						var pixelArray = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<byte>(texture.Pixels, texture.Height * texture.Width * texture.BytesPerPixel, Allocator.None);
+                        #if ENABLE_UNITY_COLLECTIONS_CHECKS
+						NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref pixelArray, AtomicSafetyHandle.GetTempMemoryHandle());
+						#endif
+						var dstTexture = texture2D.GetRawTextureData<byte>();
+						int stride = texture.Width * texture.BytesPerPixel;
+						for (int y = 0; y < texture.Height; ++y)
+						{
+							NativeArray<byte>.Copy(pixelArray, y * stride, dstTexture, (texture.Height - y - 1) * stride, stride);
+						}
+					}
+					texture2D.Apply(true);
+					texture.SetStatus(ImTextureStatus.Ok);
+					break;
+				case ImTextureStatus.WantDestroy:
+					texture2D = _textures[texture.TexID];
+					Object.Destroy(texture2D);
+					_textures.Remove(texture.TexID);
+					texture.SetStatus(ImTextureStatus.Destroyed);
+					texture.SetTexID(ImTextureID.Null);
+					break;
+			}
+		}
+
+		public bool TryGetTexture(ImTextureID texId, out Texture2D texture)
+		{
+			return _textures.TryGetValue(texId, out texture);
+		}
+
+		public void Shutdown()
+		{
+			/*foreach (var (_, texture2D) in _textures)
+			{
+				Object.Destroy(texture2D);
+			}
+
+			var imguiTextures = ImGui.GetPlatformIO().Textures;
+			for (int i = 0; i < imguiTextures.Size; i++)
+			{
+				imguiTextures[i].SetStatus(ImTextureStatus.Destroyed);
+				imguiTextures[i].SetTexID(ImTextureID.Null);
+			}
+			_textures.Clear();*/
 		}
 	}
 }

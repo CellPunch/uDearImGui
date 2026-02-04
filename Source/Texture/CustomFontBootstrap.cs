@@ -1,15 +1,15 @@
 ﻿using System;
-using System.IO;
+using Hexa.NET.ImGui;
 using UnityEngine;
-using ImGuiNET;
 
 public sealed class CustomFontBootstrap : MonoBehaviour
 {
     [SerializeField] private CustomFontByteData fontData;
     [SerializeField, Range(16, 96)] private int fontSizePx = 48;
-    [SerializeField] private int desiredAtlasWidth = 4096;
+    [SerializeField] private int minTextureWidth = 4096;
+    [SerializeField] private int maxTextureWidth = 4096;
 
-    private unsafe ImFontConfig* imFontConfig;
+    private ImFontConfigPtr imFontConfig;
     
     public unsafe void OnFontInit(ImGuiIOPtr io)
     {
@@ -22,18 +22,19 @@ public sealed class CustomFontBootstrap : MonoBehaviour
 
         io.Fonts.Clear();
         
-        io.Fonts.TexDesiredWidth = desiredAtlasWidth;
+        io.Fonts.TexMinWidth = minTextureWidth;
+        io.Fonts.TexMaxWidth = maxTextureWidth;
         io.Fonts.TexGlyphPadding *= 2; //Double padding to preserve mipmapping problems
 
-        
-        imFontConfig = ImGuiNative.ImFontConfig_ImFontConfig();
-        imFontConfig->RasterizerMultiply = 0.9f;
-        imFontConfig->FontDataOwnedByAtlas = 0;
+
+        imFontConfig = ImGui.ImFontConfig();
+        imFontConfig.RasterizerMultiply = 0.9f;
+        imFontConfig.FontDataOwnedByAtlas = false;
 
         fixed (byte* pFont = fontData.FontData)
         {
             io.Fonts.AddFontFromMemoryTTF(
-                (IntPtr)pFont,
+                pFont,
                 fontData.FontData.Length,
                 fontSizePx,
                 imFontConfig,
@@ -44,7 +45,7 @@ public sealed class CustomFontBootstrap : MonoBehaviour
 
     private unsafe void OnDestroy()
     {
-        ImGuiNative.ImFontConfig_destroy(imFontConfig);
+        imFontConfig.Destroy();
     }
     
 }

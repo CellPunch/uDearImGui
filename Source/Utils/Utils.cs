@@ -1,7 +1,7 @@
-﻿using ImGuiNET;
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Hexa.NET.ImGui;
 using UnityEngine;
 
 namespace UImGui
@@ -11,13 +11,13 @@ namespace UImGui
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static Vector2 ScreenToImGui(in Vector2 point)
 		{
-			return new Vector2(point.x, ImGui.GetIO().DisplaySize.y - point.y);
+			return new Vector2(point.x, ImGui.GetIO().DisplaySize.Y - point.y);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static Vector2 ImGuiToScreen(in Vector2 point)
 		{
-			return new Vector2(point.x, ImGui.GetIO().DisplaySize.y - point.y);
+			return new Vector2(point.x, ImGui.GetIO().DisplaySize.Y - point.y);
 		}
 
 		internal static string StringFromPtr(byte* ptr)

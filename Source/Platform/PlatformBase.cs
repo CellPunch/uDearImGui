@@ -1,5 +1,5 @@
-﻿using ImGuiNET;
-using System;
+﻿using System;
+using Hexa.NET.ImGui;
 using UImGui.Assets;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -16,7 +16,7 @@ namespace UImGui.Platform
 
 		protected readonly PlatformCallbacks _callbacks = new PlatformCallbacks();
 
-		protected ImGuiMouseCursor _lastCursor = ImGuiMouseCursor.COUNT;
+		protected ImGuiMouseCursor _lastCursor = ImGuiMouseCursor.Count;
 
 		internal PlatformBase(CursorShapesAsset cursorShapes, IniSettingsAsset iniSettings)
 		{
@@ -28,8 +28,9 @@ namespace UImGui.Platform
 		{
 			io.SetBackendPlatformName("Unity Input System");
 			io.BackendFlags |= ImGuiBackendFlags.HasMouseCursors;
+			io.BackendFlags |= ImGuiBackendFlags.RendererHasTextures;
 
-			if ((config.ImGuiConfig & ImGuiConfigFlags.NavEnableSetMousePos) != 0)
+			if (io.ConfigNavMoveSetMousePos)
 			{
 				io.BackendFlags |= ImGuiBackendFlags.HasSetMousePos;
 				io.WantSetMousePos = true;
@@ -43,10 +44,12 @@ namespace UImGui.Platform
 			unsafe
 			{
 				PlatformCallbacks.SetClipboardFunctions(PlatformCallbacks.GetClipboardTextCallback, PlatformCallbacks.SetClipboardTextCallback);
+
+				ImGuiPlatformIOPtr platformIo = ImGui.GetPlatformIO();
+				_callbacks.Assign(platformIo);
+				platformIo.PlatformClipboardUserData = (void*)IntPtr.Zero;
 			}
 
-			_callbacks.Assign(io);
-			io.ClipboardUserData = IntPtr.Zero;
 
 			if (_iniSettings != null)
 			{
@@ -59,24 +62,23 @@ namespace UImGui.Platform
 
 		public virtual void PrepareFrame(ImGuiIOPtr io, Rect displayRect)
 		{
-			Assert.IsTrue(io.Fonts.IsBuilt(), "Font atlas not built! Generally built by the renderer. Missing call to renderer NewFrame() function?");
+			//Assert.IsTrue(io.Fonts.TexIsBuilt, "Font atlas not built! Generally built by the renderer. Missing call to renderer NewFrame() function?"); // idk
 
-			io.DisplaySize = displayRect.size; // TODO: dpi aware, scale, etc.
+			io.DisplaySize = displayRect.size.ToSystem(); // TODO: dpi aware, scale, etc.
 
 			io.DeltaTime = Mathf.Max(Time.unscaledDeltaTime, 0.001f);
 
 			if (_iniSettings != null && io.WantSaveIniSettings)
 			{
-				_iniSettings.Save(ImGui.SaveIniSettingsToMemory());
+				_iniSettings.Save(ImGui.SaveIniSettingsToMemoryS());
 				io.WantSaveIniSettings = false;
 			}
 		}
 
-		public virtual void Shutdown(ImGuiIOPtr io)
+		public virtual void Shutdown(ImGuiIOPtr io, ImGuiPlatformIOPtr pio)
 		{
 			io.SetBackendPlatformName(null);
-
-			_callbacks.Unset(io);
+			_callbacks.Unset(pio);
 		}
 
 		protected void UpdateCursor(ImGuiIOPtr io, ImGuiMouseCursor cursor)

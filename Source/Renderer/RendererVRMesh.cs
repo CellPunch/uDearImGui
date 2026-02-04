@@ -1,18 +1,15 @@
 ﻿#if UNITY_2020_1_OR_NEWER
-using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Hexa.NET.ImGui;
 using UImGui.Assets;
-using UImGui.Platform;
 using UImGui.Texture;
-using UImGui.VR;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Rendering;
-using UnityEngine.XR;
 using Object = UnityEngine.Object;
 
 namespace UImGui.Renderer
@@ -95,11 +92,13 @@ namespace UImGui.Renderer
 
         public void RenderDrawLists(List<DrawCommand> commands, ImDrawDataPtr drawData)
         {
-            Vector2 fbOSize = drawData.DisplaySize * drawData.FramebufferScale;
+            Vector2 fbOSize = (drawData.DisplaySize * drawData.FramebufferScale).ToUnity();
 
             // Avoid rendering when minimized.
             if (fbOSize.x <= 0f || fbOSize.y <= 0f || drawData.TotalVtxCount == 0) return;
 
+			_textureManager.UpdateTextures(ref drawData.Textures);
+            
             UImGuiUtility.VRContext.WorldSpaceTransformer.Update();
 
             Constants.UpdateMeshMarker.Begin();
@@ -175,7 +174,7 @@ namespace UImGui.Renderer
                     // Define subMeshes.
                     for (int i = 0, iMax = drawList.CmdBuffer.Size; i < iMax; ++i)
                     {
-                        ImDrawCmdPtr cmd = drawList.CmdBuffer[i];
+                        ImDrawCmd cmd = drawList.CmdBuffer[i];
                         SubMeshDescriptor descriptor = new SubMeshDescriptor
                         {
                             topology = MeshTopology.Triangles,
@@ -195,13 +194,13 @@ namespace UImGui.Renderer
             _mesh.UploadMeshData(false);
         }
 
-        private void CreateDrawCommands(List<DrawCommand> commands, ImDrawDataPtr drawData, Vector2 fbSize)
+        private unsafe void CreateDrawCommands(List<DrawCommand> commands, ImDrawDataPtr drawData, Vector2 fbSize)
         {
-            IntPtr prevTextureId = IntPtr.Zero;
-            Vector4 clipOffset = new Vector4(drawData.DisplayPos.x, drawData.DisplayPos.y,
-                drawData.DisplayPos.x, drawData.DisplayPos.y);
-            Vector4 clipScale = new Vector4(drawData.FramebufferScale.x, drawData.FramebufferScale.y,
-                drawData.FramebufferScale.x, drawData.FramebufferScale.y);
+            ImTextureID prevTextureId = ImTextureID.Null;
+            Vector4 clipOffset = new Vector4(drawData.DisplayPos.X, drawData.DisplayPos.Y,
+                drawData.DisplayPos.X, drawData.DisplayPos.Y);
+            Vector4 clipScale = new Vector4(drawData.FramebufferScale.X, drawData.FramebufferScale.Y,
+                drawData.FramebufferScale.X, drawData.FramebufferScale.Y);
 
 
             int subOf = 0;
@@ -225,28 +224,28 @@ namespace UImGui.Renderer
                 ImDrawListPtr drawList = drawData.CmdLists[n];
                 for (int i = 0, iMax = drawList.CmdBuffer.Size; i < iMax; ++i, ++subOf)
                 {
-                    ImDrawCmdPtr drawCmd = drawList.CmdBuffer[i];
-                    if (drawCmd.UserCallback != IntPtr.Zero)
+                    ImDrawCmd drawCmd = drawList.CmdBuffer[i];
+                    if (drawCmd.UserCallback != IntPtr.Zero.ToPointer())
                     {
                         UserDrawCallback userDrawCallback =
-                            Marshal.GetDelegateForFunctionPointer<UserDrawCallback>(drawCmd.UserCallback);
+                            Marshal.GetDelegateForFunctionPointer<UserDrawCallback>((IntPtr)drawCmd.UserCallback);
                         userDrawCallback(drawList, drawCmd);
                     }
                     else
                     {
                         // Project scissor rectangle into framebuffer space and skip if fully outside.
-                        Vector4 clipSize = drawCmd.ClipRect - clipOffset;
+                        Vector4 clipSize = drawCmd.ClipRect.ToUnity() - clipOffset;
                         Vector4 clip = Vector4.Scale(clipSize, clipScale);
 
                         //if (clip.x >= fbSize.x || clip.y >= fbSize.y || clip.z < 0f || clip.w < 0f) continue;
 
-                        if (prevTextureId != drawCmd.TextureId)
+                        if (prevTextureId != drawCmd.GetTexID())
                         {
-                            prevTextureId = drawCmd.TextureId;
+                            prevTextureId = drawCmd.GetTexID();
 
                             // TODO: Implement ImDrawCmdPtr.GetTexID().
                             bool hasTexture =
-                                _textureManager.TryGetTexture(prevTextureId, out UnityEngine.Texture texture);
+                                _textureManager.TryGetTexture(prevTextureId, out Texture2D texture);
                             Assert.IsTrue(hasTexture,
                                 $"Texture {prevTextureId} does not exist. Try to use UImGuiUtility.GetTextureID().");
 
@@ -270,7 +269,7 @@ namespace UImGui.Renderer
                         {
                             type = DrawCommandType.SetGlobalVector,
                             propertyId = _screenSizeID,
-                            vectorData = new Vector4(drawData.DisplaySize.x, drawData.DisplaySize.y, 0, 0)
+                            vectorData = new Vector4(drawData.DisplaySize.X, drawData.DisplaySize.Y, 0, 0)
                         });
                         commands.Add(new DrawCommand()
                         {

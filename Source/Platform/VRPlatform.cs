@@ -1,11 +1,7 @@
-using ImGuiNET;
-using System;
-using System.Collections.Generic;
+using Hexa.NET.ImGui;
 using UImGui.Assets;
 using UImGui.VR;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 
 namespace UImGui.Platform
 {
@@ -24,7 +20,7 @@ namespace UImGui.Platform
             WorldSpaceTransformer worldSpaceTransformer)
         {
             var mouseScreenPosition = worldSpaceTransformer.GetCursorPosition(virtualXRInput);
-            io.MousePos = Utils.ScreenToImGui(mouseScreenPosition);
+            io.MousePos = Utils.ScreenToImGui(mouseScreenPosition).ToSystem();
 
             var mouseScroll = virtualXRInput.Scroll.ReadValue<Vector2>();
             io.MouseWheel = mouseScroll.y;

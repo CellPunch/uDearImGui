@@ -1,4 +1,4 @@
-using ImGuiNET;
+using Hexa.NET.ImGui;
 using UImGui.Assets;
 using UnityEditor;
 using UnityEngine;
@@ -12,9 +12,9 @@ namespace UImGui.Editor
 
 		public override void OnInspectorGUI()
 		{
-			StyleAsset styleAsset = target as StyleAsset;
+			StyleAsset styleAsset = (StyleAsset) target;
 
-			bool hasContext = ImGui.GetCurrentContext() != System.IntPtr.Zero;
+			bool hasContext = ImGui.GetCurrentContext() != ImGuiContextPtr.Null;
 			if (!hasContext)
 			{
 				EditorGUILayout.HelpBox("Can't save or apply Style.\n"
@@ -52,13 +52,19 @@ namespace UImGui.Editor
 			_showColors = EditorGUILayout.Foldout(_showColors, "Colors", true);
 			if (_showColors)
 			{
-				for (int indexColumn = 0; indexColumn < (int)ImGuiCol.COUNT; ++indexColumn)
+				for (int colorId = 0; colorId < (int)ImGuiCol.Count; ++colorId)
 				{
-					Color indexColor = styleAsset.Colors[indexColumn];
-					string colorName = ImGui.GetStyleColorName((ImGuiCol)indexColumn);
+					var colorName = ImGui.GetStyleColorNameS((ImGuiCol)colorId);
+					if (!styleAsset.colors.TryGetValue(colorName, out Color indexColor))
+					{
+						ImGuiStyle style = new ImGuiStyle();
+						ImGui.StyleColorsDark(ref style);
+						indexColor = style.Colors[colorId].ToUnityColor();
+						changed = true;
+					}
 					Color newColor = EditorGUILayout.ColorField(colorName, indexColor);
 					changed |= newColor != indexColor;
-					styleAsset.Colors[indexColumn] = newColor;
+					styleAsset.colors[colorName] = newColor;
 				}
 			}
 
