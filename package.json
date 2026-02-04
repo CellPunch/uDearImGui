@@ -1,8 +1,8 @@
 {
-  "name": "com.ycatdev.uimgui.extended",
-  "displayName": "UImGui Extended",
+  "name": "io.github.cellpunch.uimgui",
+  "displayName": "UImGui Extended Updated",
   "version": "6.0.0",
-  "description": "Extended Unity wrapper for ImGUI.NET",
+  "description": "Unity wrapper for Hexa.NET.ImGui. Based on UImGui Extended by ycatdev",
   "unity": "2019.4",
   "dependencies": {
   },
@@ -12,12 +12,12 @@
     "ui"
   ],
   "author": {
-    "name": "yCatDev",
-    "url": "https://github.com/ycatdev"
+    "name": "Malpiszonekx4",
+    "url": "https://github.com/Malpiszonekx4"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yCatDev/uimgui-extended",
+    "url": "https://github.com/CellPunch/uimgui",
     "revision": ""
   }
 }

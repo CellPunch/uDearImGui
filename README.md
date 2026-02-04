@@ -1,3 +1,13 @@
+# UImGui Extended Updated
+This is a fork of the UImGui Extended by [yCatDev](https://github.com/yCatDev/uimgui-extended).
+Uses the [Hexa.NET.ImGui](https://github.com/HexaEngine/Hexa.NET.ImGui) Dear ImGui wrapper instead of [ImGui.NET](https://github.com/mellinoe/ImGui.NET) to be able to use new Dear ImGui versions.
+- Tested on Unity 6.3.0f1 with URP and Input System on Windows 10
+- Currently used Dear ImGui version: 1.92.3 (Hexa.NET.ImGui 2.2.10-prerelease)
+- Includes only Windows and Linux cimgui libraries (that's what we currently target and are able to test on)
+
+Original READMEs below
+---
+
 # UImGui Extended
 
 ![vr-mode-demo](.Documentation/vrmode.avif)
