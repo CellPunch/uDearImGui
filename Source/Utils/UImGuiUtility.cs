@@ -36,10 +36,10 @@ namespace UImGui
 		internal static void AddLibraryPath()
 		{
 #if UNITY_EDITOR_WIN
-			HexaGen.Runtime.LibraryLoader.CustomLoadFolders.Add(Path.Join(Application.dataPath, "../Packages/com.ycatdev.uimgui.extended/Plugins/imgui/win-x64"));
+			HexaGen.Runtime.LibraryLoader.CustomLoadFolders.Add(Path.GetFullPath("Packages/io.github.cellpunch.uimgui/Plugins/imgui/win-x64"));
 #endif
 #if UNITY_EDITOR_LINUX
-			HexaGen.Runtime.LibraryLoader.CustomLoadFolders.Add(Path.Join(Application.dataPath, "../Packages/com.ycatdev.uimgui.extended/Plugins/imgui/linux-x64"));
+			HexaGen.Runtime.LibraryLoader.CustomLoadFolders.Add(Path.GetFullPath("Packages/io.github.cellpunch.uimgui/Plugins/imgui/linux-x64"));
 #endif
 		}
 #endif
