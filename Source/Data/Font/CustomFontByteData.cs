@@ -19,8 +19,7 @@ public class CustomFontByteData : ScriptableObject
 #if UNITY_EDITOR
     private void OnValidate()
     {
-        var path = Path.Combine(Application.dataPath, AssetDatabase.GetAssetPath(font).Substring("Assets".Length + 1));
-        fontData = File.ReadAllBytes(path);
+        fontData = File.ReadAllBytes(AssetDatabase.GetAssetPath(font));
     }
 #endif
 }
