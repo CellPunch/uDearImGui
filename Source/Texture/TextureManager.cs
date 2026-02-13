@@ -209,7 +209,8 @@ namespace UImGui.Texture
 
 	internal class TextureManager
 	{
-		private readonly Dictionary<IntPtr, Texture2D> _textures = new Dictionary<IntPtr, Texture2D>();
+		private readonly Dictionary<ImTextureID, Texture2D> _textures = new Dictionary<ImTextureID, Texture2D>();
+		private readonly Dictionary<Texture2D, ImTextureID> _texturesReverse = new Dictionary<Texture2D, ImTextureID>();
 
 		public void Initialize(ImGuiIOPtr io, FontAtlasConfigAsset fontAtlasConfiguration, FontInitializerEvent fontCustomInitializer)
 		{
@@ -257,6 +258,7 @@ namespace UImGui.Texture
 					Texture2D texture2D = new Texture2D(texture.Width, texture.Height, TextureFormat.RGBA32, true, true);
 					texture.SetTexID(texture2D.GetNativeTexturePtr());
 					_textures.Add(texture.TexID, texture2D);
+					_texturesReverse.Add(texture2D, texture.TexID);
 					goto case ImTextureStatus.WantUpdates;
 				case ImTextureStatus.WantUpdates:
 					texture2D =	_textures[texture.TexID];
@@ -280,6 +282,7 @@ namespace UImGui.Texture
 					texture2D = _textures[texture.TexID];
 					Object.Destroy(texture2D);
 					_textures.Remove(texture.TexID);
+					_texturesReverse.Remove(texture2D);
 					texture.SetStatus(ImTextureStatus.Destroyed);
 					texture.SetTexID(ImTextureID.Null);
 					break;
@@ -289,6 +292,18 @@ namespace UImGui.Texture
 		public bool TryGetTexture(ImTextureID texId, out Texture2D texture)
 		{
 			return _textures.TryGetValue(texId, out texture);
+		}
+
+		public unsafe ImTextureRef GetTextureRef(Texture2D texture)
+		{
+			if (!_texturesReverse.TryGetValue(texture, out ImTextureID id))
+			{
+				id = texture.GetNativeTexturePtr();
+				_texturesReverse[texture] = id;
+				_textures[id] = texture;
+			}
+
+			return new ImTextureRef(texId: id);
 		}
 
 		public void Shutdown()

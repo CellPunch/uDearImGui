@@ -15,7 +15,7 @@ namespace UImGui
 {
 	public static class UImGuiUtility
 	{
-		// public static IntPtr GetTextureId(UTexture texture) => Context?.TextureManager.GetTextureId(texture) ?? IntPtr.Zero; //does not compile
+		public static ImTextureRef GetTextureRef(Texture2D texture) => Context?.TextureManager.GetTextureRef(texture) ?? new ImTextureRef(); //does not compile
 		// internal static SpriteInfo GetSpriteInfo(Sprite sprite) => Context?.TextureManager.GetSpriteInfo(sprite) ?? null; // does not compile
 
 		internal static Context Context;
